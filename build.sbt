@@ -56,12 +56,12 @@ lazy val library = project
   .enablePlugins(ScalaJSPlugin)
   .settings(commonSettings)
   .settings(
-    name        := "fluxus-library-template",
+    name        := "fluxus-daisyui",
     description := "A template for fluxus libraries",
     libraryDependencies ++= Seq(
       "org.scalatest"    %%% "scalatest" % "3.2.19" % "test",
       "com.lihaoyi"      %%% "pprint"    % "0.9.0"  % "test",
-      "io.github.edadma" %%% "fluxus"    % "0.0.9",
+      "io.github.edadma" %%% "fluxus"    % "0.0.10",
     ),
     jsEnv                                  := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
     scalaJSUseMainModuleInitializer        := true,
@@ -81,14 +81,14 @@ lazy val examples = project
   .settings(
     name := "examples",
     libraryDependencies ++= Seq(
-      "io.github.edadma" %%% "fluxus" % "0.0.9",
+      "io.github.edadma" %%% "fluxus" % "0.0.10",
     ),
     scalaJSUseMainModuleInitializer := true,
     publish / skip                  := true,
     publishLocal / skip             := true,
   )
 
-lazy val fluxus_library_template = project
+lazy val fluxus_daisyui = project
   .in(file("."))
   .aggregate(library, examples)
   .settings(
