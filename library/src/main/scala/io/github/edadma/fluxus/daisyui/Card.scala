@@ -17,16 +17,29 @@ case class CardProps(
 /** Card component
   */
 val Card = (props: CardProps) => {
-  val baseClass     = "card"
-  val variantClass  = if (props.variant != "normal") s"card-${props.variant}" else ""
-  val borderedClass = if (props.bordered) "card-bordered" else ""
+  val classes = List.newBuilder[String]
 
-  val cardClass = List(
-    baseClass,
-    variantClass,
-    borderedClass,
-    props.className,
-  ).filter(_.nonEmpty).mkString(" ")
+  // Base class is always present
+  classes += "card"
+
+  // Handle variant - must use predefined Tailwind classes
+  val variantClass = props.variant match {
+    case "compact" => "card-compact"
+    case "side"    => "card-side"
+    case _         => ""
+  }
+
+  // Add conditional classes
+  if (variantClass.nonEmpty) classes += variantClass
+  if (props.bordered) classes += "card-bordered"
+
+  // Add any custom classes
+  if (props.className.nonEmpty) {
+    props.className.split(" ").foreach(cls => classes += cls)
+  }
+
+  // Join all classes with spaces
+  val cardClass = classes.result().mkString(" ")
 
   div(
     cls := cardClass,

@@ -14,11 +14,22 @@ case class ContainerProps(
 /** Container component
   */
 val Container = (props: ContainerProps) => {
-  val containerClass = List(
-    if (props.center) "container mx-auto" else "",
-    if (props.padding) "px-4" else "",
-    props.className,
-  ).filter(_.nonEmpty).mkString(" ")
+  val classes = List.newBuilder[String]
+
+  // Add conditional classes
+  if (props.center) {
+    classes += "container"
+    classes += "mx-auto"
+  }
+  if (props.padding) classes += "px-4"
+
+  // Add any custom classes
+  if (props.className.nonEmpty) {
+    props.className.split(" ").foreach(cls => classes += cls)
+  }
+
+  // Join all classes with spaces
+  val containerClass = classes.result().mkString(" ")
 
   div(
     cls := containerClass,

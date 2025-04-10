@@ -22,34 +22,63 @@ case class ButtonProps(
 /** Button component using DaisyUI styling
   */
 val Button = (props: ButtonProps) => {
-  val baseClass        = "btn"
-  val variantClass     = s"btn-${props.variant}"
-  val sizeClass        = s"btn-${props.size}"
-  val shapeClass       = props.shape.map(s => s"btn-$s").getOrElse("")
-  val outlineClass     = if (props.outline) "btn-outline" else ""
-  val wideClass        = if (props.wide) "btn-wide" else ""
-  val glassClass       = if (props.glass) "btn-glass" else ""
-  val loadingClass     = if (props.loading) "btn-loading" else ""
-  val disabledAttr     = if (props.disabled) disabled := true else null
-  val noAnimationClass = if (props.noAnimation) "no-animation" else ""
+  val classes = List.newBuilder[String]
 
-  val buttonClass = List(
-    baseClass,
-    variantClass,
-    sizeClass,
-    shapeClass,
-    outlineClass,
-    wideClass,
-    glassClass,
-    loadingClass,
-    noAnimationClass,
-    props.className,
-  ).filter(_.nonEmpty).mkString(" ")
+  // Base class is always present
+  classes += "btn"
+
+  // Handle variant - must use predefined Tailwind classes
+  val variantClass = props.variant match {
+    case "primary" => "btn-primary"
+    case "secondary" => "btn-secondary"
+    case "accent" => "btn-accent"
+    case "info" => "btn-info"
+    case "success" => "btn-success"
+    case "warning" => "btn-warning"
+    case "error" => "btn-error"
+    case "ghost" => "btn-ghost"
+    case "link" => "btn-link"
+    case _ => ""
+  }
+
+  // Handle size - must use predefined Tailwind classes
+  val sizeClass = props.size match {
+    case "lg" => "btn-lg"
+    case "md" => "btn-md"
+    case "sm" => "btn-sm"
+    case "xs" => "btn-xs"
+    case _ => ""
+  }
+
+  // Handle shape - must use predefined Tailwind classes
+  val shapeClass = props.shape match {
+    case Some("circle") => "btn-circle"
+    case Some("square") => "btn-square"
+    case _ => ""
+  }
+
+  // Add conditional classes
+  if (variantClass.nonEmpty) classes += variantClass
+  if (sizeClass.nonEmpty) classes += sizeClass
+  if (shapeClass.nonEmpty) classes += shapeClass
+  if (props.outline) classes += "btn-outline"
+  if (props.wide) classes += "btn-wide"
+  if (props.glass) classes += "btn-glass"
+  if (props.loading) classes += "btn-loading"
+  if (props.noAnimation) classes += "no-animation"
+
+  // Add any custom classes
+  if (props.className.nonEmpty) {
+    props.className.split(" ").foreach(cls => classes += cls)
+  }
+
+  // Join all classes with spaces
+  val buttonClass = classes.result().mkString(" ")
 
   button(
     cls     := buttonClass,
     onClick := (() => props.onClick()),
-    disabledAttr,
+    if (props.disabled) disabled := true else null,
     props.text,
   )
 }

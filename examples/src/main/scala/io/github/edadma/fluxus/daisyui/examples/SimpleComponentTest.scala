@@ -1,8 +1,6 @@
 package io.github.edadma.fluxus.daisyui.examples
 
-import org.scalajs.dom
 import io.github.edadma.fluxus._
-import io.github.edadma.fluxus.core._
 import io.github.edadma.fluxus.daisyui._
 
 def SimpleComponentTest: FluxusNode = {
@@ -34,10 +32,4 @@ def SimpleComponentTest: FluxusNode = {
       ),
     ),
   )
-}
-
-@main
-def main(): Unit = {
-  // Initialize the application by rendering the main component to the DOM
-  render(SimpleComponentTest, "app")
 }
