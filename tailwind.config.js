@@ -28,19 +28,9 @@ module.exports = {
     require('daisyui')
   ],
 
-  // DaisyUI themes (if using)
-  daisyui: {
-    themes: ["light", "dark", "night", "cupcake"],
-  },
-
   // New in v4: Optional performance and output configurations
   performance: {
     // Optimize for speed or size
     preset: 'default'
   },
-
-  // Experimental features (optional)
-  experimental: {
-    optimizeUniversalDefaults: true
-  }
 }
