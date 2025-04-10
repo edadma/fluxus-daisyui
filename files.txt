@@ -1,0 +1,36 @@
+; fluxus-daisyui library sources
+
+# fluxus-daisyui library code
+./library/src/main/scala/io/github/edadma/fluxus/daisyui
+Button.scala
+Card.scala
+Container.scala
+
+# example apps
+./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
+SimpleComponentTest.scala
+
+# build files
+./
+build.sbt
+main.js
+package.json
+tailwind.config.js
+vite.config.js
+./project
+plugins.sbt
+
+# support for running test apps
+./
+index.html
+./library/src/main/resources/styles
+tailwind.css
+
+# docs
+./
+README.md
+./docs
+_config.yml
+index.md
+./docs/releases
+0.0.1.md
