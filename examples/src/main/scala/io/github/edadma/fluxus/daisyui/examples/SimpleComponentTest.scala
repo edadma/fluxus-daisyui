@@ -10,7 +10,6 @@ def SimpleComponentTest: FluxusNode = {
     className = "flex items-center justify-center min-h-screen",
     children = Card <> CardProps(
       title = Some("Simple Component Test"),
-      bordered = true,
       className = "w-full max-w-md",
       children = div(
         p(
@@ -21,7 +20,6 @@ def SimpleComponentTest: FluxusNode = {
           cls := "flex flex-col items-center",
           Button <> ButtonProps(
             text = "Click Me",
-            variant = "primary",
             onClick = () => setClickCount(clickCount + 1),
           ),
           p(
