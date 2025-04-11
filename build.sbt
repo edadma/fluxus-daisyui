@@ -81,7 +81,7 @@ lazy val examples = project
   .settings(
     name := "examples",
     libraryDependencies ++= Seq(
-      "io.github.edadma" %%% "fluxus" % "0.0.12",
+      "io.github.edadma" %%% "fluxus" % "0.0.13",
     ),
     scalaJSUseMainModuleInitializer := true,
     publish / skip                  := true,
