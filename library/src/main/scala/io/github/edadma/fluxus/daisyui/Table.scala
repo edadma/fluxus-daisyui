@@ -231,7 +231,7 @@ val Table = (props: TableProps) => {
               })
             )
           })
-      ),
+      )
 
       // Table footer if provided
       props.footer.map(footerContent =>
@@ -336,7 +336,7 @@ val Pagination = (props: PaginationProps) => {
       button(
         typ := "button",
         cls := s"btn $sizeClass btn-ghost",
-        disabled := props.currentPage === 1,
+        disabled := props.currentPage == 1,
         onClick := (() => props.onPageChange(1)),
         "«"
       )
@@ -346,7 +346,7 @@ val Pagination = (props: PaginationProps) => {
     button(
       typ := "button",
       cls := s"btn $sizeClass btn-ghost",
-      disabled := props.currentPage === 1,
+      disabled := props.currentPage == 1,
       onClick := (() => props.onPageChange(props.currentPage - 1)),
       "‹"
     ),
@@ -377,7 +377,7 @@ val Pagination = (props: PaginationProps) => {
     button(
       typ := "button",
       cls := s"btn $sizeClass btn-ghost",
-      disabled := props.currentPage === props.totalPages || props.totalPages === 0,
+      disabled := props.currentPage == props.totalPages || props.totalPages == 0,
       onClick := (() => props.onPageChange(props.currentPage + 1)),
       "›"
     ),
@@ -387,7 +387,7 @@ val Pagination = (props: PaginationProps) => {
       button(
         typ := "button",
         cls := s"btn $sizeClass btn-ghost",
-        disabled := props.currentPage === props.totalPages || props.totalPages === 0,
+        disabled := props.currentPage == props.totalPages || props.totalPages == 0,
         onClick := (() => props.onPageChange(props.totalPages)),
         "»"
       )
@@ -443,7 +443,7 @@ val TableWithPagination = (props: TableWithPaginationProps) => {
       currentPage = props.currentPage,
       totalPages = totalPages,
       onPageChange = props.onPageChange,
-      size = props.paginationSize,
+      size = props.paginationSize
     )
 
   // Render the table with pagination in footer
@@ -468,7 +468,7 @@ val TableWithPagination = (props: TableWithPaginationProps) => {
       footer = Some(div(
         cls := "pt-2 pb-1",
         paginationNode
-      )),
+      ))
     )
   )
 }
