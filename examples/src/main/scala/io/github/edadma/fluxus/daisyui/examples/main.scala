@@ -2,4 +2,4 @@ package io.github.edadma.fluxus.daisyui.examples
 
 import io.github.edadma.fluxus.render
 
-@main def run(): Unit = render(SpinnerTest, "app")
+@main def run(): Unit = render(TableExample, "app")

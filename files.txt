@@ -6,12 +6,16 @@ Avatar.scala
 Button.scala
 Card.scala
 Container.scala
+Spinner.scala
+Table.scala
 
 # example apps
 ./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
 AvatarTest.scala
 main.scala
 SimpleComponentTest.scala
+SpinnerTest.scala
+TableExample.scala
 
 # build files
 ./

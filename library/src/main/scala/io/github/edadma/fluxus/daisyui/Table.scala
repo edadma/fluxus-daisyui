@@ -231,7 +231,7 @@ val Table = (props: TableProps) => {
               })
             )
           })
-      )
+      ),
 
       // Table footer if provided
       props.footer.map(footerContent =>
@@ -422,7 +422,7 @@ case class TableWithPaginationProps(
                                      onRowClick: Option[(Map[String, Any], Int) => Unit] = None,
                                      emptyText: String = "No data available",
                                      keyField: String = "id",
-                                     caption: Option[String] = None,
+                                     caption: Option[String] = None
                                    )
 
 /** TableWithPagination component
