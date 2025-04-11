@@ -2,12 +2,15 @@
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
+Avatar.scala
 Button.scala
 Card.scala
 Container.scala
 
 # example apps
 ./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
+AvatarTest.scala
+main.scala
 SimpleComponentTest.scala
 
 # build files
@@ -23,6 +26,7 @@ plugins.sbt
 # support for running test apps
 ./
 index.html
+index.css
 ./library/src/main/resources/styles
 tailwind.css
 
