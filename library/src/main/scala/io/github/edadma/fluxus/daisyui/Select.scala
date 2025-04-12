@@ -21,6 +21,7 @@ case class SelectProps(
     allowClear: Boolean = false, // Whether to show clear button
 
     // Styling options
+    variant: String = "",         // primary, secondary, accent, info, success, warning, error
     width: Option[String] = None, // Custom width
     bordered: Boolean = true,     // Show border
     size: String = "md",          // sm, md, lg
@@ -185,17 +186,41 @@ val Select = (props: SelectProps) => {
   // Check if we need to show the clear button
   val showClear = props.allowClear && props.value.isDefined && !props.disabled && (isHovered || isFocused)
 
-  // Build border classes - now accounting for focused state too
+  // Calculate highlight color once based on variant
+  val highlightColor = props.variant match {
+    case "primary"   => "border-primary"
+    case "secondary" => "border-secondary"
+    case "accent"    => "border-accent"
+    case "info"      => "border-info"
+    case "success"   => "border-success"
+    case "warning"   => "border-warning"
+    case "error"     => "border-error"
+    case _           => "border-primary" // Default to primary
+  }
+
+  // Calculate background color for selected options based on variant
+  val selectedBgColor = props.variant match {
+    case "primary"   => "bg-primary/10"
+    case "secondary" => "bg-secondary/10"
+    case "accent"    => "bg-accent/10"
+    case "info"      => "bg-info/10"
+    case "success"   => "bg-success/10"
+    case "warning"   => "bg-warning/10"
+    case "error"     => "bg-error/10"
+    case _           => "bg-primary/10" // Default to primary
+  }
+
+  // Update the borderClasses calculation
   val borderClasses = if (props.bordered) {
     if (isOpen || isFocused) {
-      // Keep highlighted while open or focused
-      "border border-primary transition-colors duration-200"
+      // Highlight color when focused/open
+      s"border $highlightColor transition-colors duration-200"
     } else if (isHovered) {
-      // Highlight on hover
-      "border border-primary transition-colors duration-200"
+      // Same highlight color on hover
+      s"border $highlightColor transition-colors duration-200"
     } else {
       // Normal state
-      "border border-base-300 hover:border-primary transition-colors duration-200"
+      s"border border-base-300 hover:$highlightColor transition-colors duration-200"
     }
   } else {
     "border-none"
@@ -231,9 +256,9 @@ val Select = (props: SelectProps) => {
 
     // Custom select trigger with hover events
     div(
-      cls := s"flex items-center justify-between rounded-lg cursor-pointer ${sizePadding} ${
-          borderClasses
-        } ${if (props.disabled) "opacity-50 cursor-not-allowed hover:border-base-300" else ""}",
+      cls := s"flex items-center justify-between rounded-lg cursor-pointer $sizePadding $borderClasses ${
+          if (props.disabled) "opacity-50 cursor-not-allowed hover:border-base-300" else ""
+        }",
       onClick      := (() => handleSelectClick()),
       onMouseEnter := (handleMouseEnter(_)),
       onMouseLeave := (handleMouseLeave(_)),
@@ -302,7 +327,7 @@ val Select = (props: SelectProps) => {
               role          := "option",
               aria_selected := props.value.contains(option.value).toString,
               cls := s"px-4 py-2 cursor-pointer hover:bg-base-200 ${
-                  if (props.value.contains(option.value)) "bg-primary/10" else ""
+                  if (props.value.contains(option.value)) selectedBgColor else ""
                 }",
               onClick := (() => handleSelect(option.value)),
               option.label,

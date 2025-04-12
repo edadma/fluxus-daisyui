@@ -52,6 +52,7 @@ def SelectTest: FluxusNode = {
               "Basic Select",
             ),
             Select <> SelectProps(
+              variant = "error",
               options = options,
               value = selectedValue1,
               onChange = setSelectedValue1,
