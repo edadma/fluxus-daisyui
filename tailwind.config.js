@@ -25,7 +25,8 @@ module.exports = {
   // Plugins
   plugins: [
     require('@tailwindcss/typography'),
-    require('daisyui')
+    require('daisyui'),
+    require("tailwindcss-animate")
   ],
 
   // New in v4: Optional performance and output configurations
