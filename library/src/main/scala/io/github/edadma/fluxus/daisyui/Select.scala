@@ -37,7 +37,7 @@ case class SelectProps(
   *
   * Features:
   *   - Custom options with label/value
-  *   - Optional clear button
+  *   - Optional clear button (visible on hover)
   *   - Support for placeholder text
   *   - Different sizes and styles
   *   - Disabled state
@@ -45,6 +45,9 @@ case class SelectProps(
 val Select = (props: SelectProps) => {
   // State for dropdown visibility
   val (isOpen, setIsOpen, _) = useState(false)
+
+  // State for hover tracking (for showing clear button)
+  val (isHovered, setIsHovered, _) = useState(false)
 
   // Create a reference to detect clicks outside the component
   val selectRef = useRef[dom.html.Div]()
@@ -82,6 +85,15 @@ val Select = (props: SelectProps) => {
     props.onChange(None)
   }
 
+  // Handle mouse enter/leave for hover state
+  def handleMouseEnter(e: dom.MouseEvent): Unit = {
+    setIsHovered(true)
+  }
+
+  def handleMouseLeave(e: dom.MouseEvent): Unit = {
+    setIsHovered(false)
+  }
+
   // Calculate classes for the select container
   val containerClasses = List.newBuilder[String]
 
@@ -113,7 +125,7 @@ val Select = (props: SelectProps) => {
   val showPlaceholder = selectedOption.isEmpty
 
   // Check if we need to show the clear button
-  val showClear = props.allowClear && props.value.isDefined && !props.disabled
+  val showClear = props.allowClear && props.value.isDefined && !props.disabled && isHovered
 
   // Dropdown indicator icon (changes based on dropdown state)
   def ChevronIcon(isUp: Boolean): FluxusNode = {
@@ -138,12 +150,14 @@ val Select = (props: SelectProps) => {
     if (props.width.isDefined) style := s"width: ${props.width.get};" else null,
     ref := selectRef,
 
-    // Custom select trigger (not using DaisyUI's select class)
+    // Custom select trigger with hover events
     div(
       cls := s"flex items-center justify-between rounded-lg cursor-pointer ${sizePadding} ${
           if (props.bordered) "border border-base-300" else "border-none"
         } ${if (props.disabled) "opacity-50 cursor-not-allowed" else ""}",
-      onClick := (() => if (!props.disabled) setIsOpen(!isOpen)),
+      onClick      := (() => if (!props.disabled) setIsOpen(!isOpen)),
+      onMouseEnter := (handleMouseEnter(_)),
+      onMouseLeave := (handleMouseLeave(_)),
 
       // Display text
       span(
@@ -155,7 +169,7 @@ val Select = (props: SelectProps) => {
       div(
         cls := "flex items-center space-x-2",
 
-        // Clear button if enabled and value is selected
+        // Clear button if enabled and value is selected and component is hovered
         if (showClear)
           button(
             typ     := "button",
