@@ -120,6 +120,9 @@ def SidebarTest: FluxusNode = {
   val (showAlert, setShowAlert, _)       = useState(false)
   val (alertMessage, setAlertMessage, _) = useState("")
 
+  // State for collapsible sidebar toggle - now using a single state for both buttons
+  val (isCollapsed, setIsCollapsed, _) = useState(false)
+
   // Handle navigation click
   def handleNavigation(id: String, item: NavItem): Unit = {
     setActiveNavId(id)
@@ -303,21 +306,58 @@ def SidebarTest: FluxusNode = {
           ),
         ),
 
-        // Collapsible Sidebar
+        // Collapsible Sidebar - improved with synchronized controls
         div(
           cls := "w-full md:w-auto",
           Card <> CardProps(
             title = Some("Collapsible Sidebar"),
             className = "mb-8",
             children = div(
-              Sidebar <> SidebarProps(
-                items = sidebarItems,
-                collapsible = true,
-                initialCollapsed = false,
-                onNavigation = Some(handleNavigation),
-                bgClass = "bg-primary bg-opacity-10",
-                bordered = true,
-                width = "w-60",
+              div(
+                cls := "mb-3 text-center",
+                button(
+                  cls     := "btn btn-sm btn-primary",
+                  onClick := (() => setIsCollapsed(!isCollapsed)),
+                  if (isCollapsed) "Expand Sidebar" else "Collapse Sidebar",
+                ),
+              ),
+              div(
+                cls := "flex border border-base-300 rounded-box overflow-hidden",
+                // Sidebar with controlled collapsed state and callback
+                div(
+                  cls := "transition-all duration-300 border-r border-base-300",
+                  Sidebar <> SidebarProps(
+                    items = sidebarItems,
+                    collapsible = true,
+                    collapsed = isCollapsed,
+                    onCollapseChange =
+                      Some(setIsCollapsed), // Important: connecting the external toggle with the component
+                    onNavigation = Some(handleNavigation),
+                    bgClass = "bg-primary bg-opacity-10",
+                    bordered = false,
+                    width = "w-60",
+                    collapsedWidth = "w-16",
+                  ),
+                ),
+
+                // Content area to make width change visible
+                div(
+                  cls := "flex-1 min-h-[400px] bg-base-100 p-4",
+                  h3(cls := "text-lg font-bold mb-2", "Content Area"),
+                  p(
+                    cls := "text-sm text-base-content/70",
+                    "This demonstrates how the sidebar collapses and the content area expands.",
+                  ),
+                  p(
+                    cls := "text-sm text-base-content/70 mt-2",
+                    if (isCollapsed) "The sidebar is now in collapsed state." else "The sidebar is now expanded.",
+                  ),
+                  div(
+                    cls := "mt-4 p-3 bg-base-200 rounded-box text-sm",
+                    "Active item: ",
+                    span(cls := "font-bold", activeNavId),
+                  ),
+                ),
               ),
             ),
           ),

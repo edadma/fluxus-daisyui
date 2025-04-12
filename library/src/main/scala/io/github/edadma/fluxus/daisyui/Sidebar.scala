@@ -26,12 +26,14 @@ case class SidebarProps(
     size: String = "md",        // xs, sm, md, lg
     bordered: Boolean = false,
     rounded: Boolean = true,
-    bgClass: String = "",                    // Complete background class e.g. "bg-base-200"
-    textClass: String = "",                  // Complete text class e.g. "text-primary"
-    width: String = "w-64",                  // Fixed width using Tailwind classes
-    collapsible: Boolean = false,            // Whether the entire sidebar can collapse
-    initialCollapsed: Boolean = false,       // Initial collapse state if collapsible
-    expandedSections: List[String] = List(), // IDs of sections that start expanded
+    bgClass: String = "",                             // Complete background class e.g. "bg-base-200"
+    textClass: String = "",                           // Complete text class e.g. "text-primary"
+    width: String = "w-64",                           // Fixed width using Tailwind classes
+    collapsedWidth: String = "w-16",                  // Width when collapsed
+    collapsible: Boolean = false,                     // Whether the entire sidebar can collapse
+    collapsed: Boolean = false,                       // Controlled collapsed state
+    onCollapseChange: Option[Boolean => Unit] = None, // Callback when collapse state changes
+    expandedSections: List[String] = List(),          // IDs of sections that start expanded
     onNavigation: Option[(String, NavItem) => Unit] = None,
     collapseButtonPosition: String = "top", // top, bottom
     showToggleIcons: Boolean = true,        // Whether to show the toggle icons for collapsible sections
@@ -56,8 +58,25 @@ val Sidebar = (props: SidebarProps) => {
   // State to track which sections were explicitly closed by the user
   val (manuallyClosedSections, setManuallyClosedSections, _) = useState[Set[String]](Set())
 
-  // State for tracking if the entire sidebar is collapsed (when collapsible=true)
-  val (collapsed, setCollapsed, _) = useState(props.initialCollapsed)
+  // Internal collapsed state - used when component is uncontrolled
+  val (internalCollapsed, setInternalCollapsed, _) = useState(props.collapsed)
+
+  // Determine if sidebar is collapsed - use props if controlled, otherwise use internal state
+  val isCollapsed = props.onCollapseChange.isDefined match {
+    case true  => props.collapsed   // Controlled component
+    case false => internalCollapsed // Uncontrolled component
+  }
+
+  // Handle collapse toggle
+  def toggleCollapsed(): Unit = {
+    val newCollapsedState = !isCollapsed
+
+    // If controlled externally, call the callback
+    props.onCollapseChange match {
+      case Some(callback) => callback(newCollapsedState)
+      case None           => setInternalCollapsed(newCollapsedState) // Only update internal state if uncontrolled
+    }
+  }
 
   // Function to check if a nav item or any of its children is active
   def isItemOrChildActive(item: NavItem, currentPath: String = ""): Boolean = {
@@ -163,8 +182,8 @@ val Sidebar = (props: SidebarProps) => {
   // Base class
   containerClasses += "sidebar"
 
-  // Width class
-  containerClasses += props.width
+  // Width class - toggle between expanded and collapsed widths
+  containerClasses += (if (isCollapsed) props.collapsedWidth else props.width)
 
   // Border class
   if (props.bordered) containerClasses += "border border-base-300"
@@ -181,9 +200,6 @@ val Sidebar = (props: SidebarProps) => {
   // Transition class for collapsible sidebar
   if (props.collapsible) {
     containerClasses += "transition-all duration-300"
-    if (collapsed) {
-      containerClasses += "w-16 overflow-hidden"
-    }
   }
 
   // Additional custom classes
@@ -254,7 +270,7 @@ val Sidebar = (props: SidebarProps) => {
                 icon,
               ),
             ).orNull,
-            if (!collapsed || !props.collapsible) {
+            if (!isCollapsed) {
               span(item.title)
             } else null,
           ),
@@ -265,7 +281,7 @@ val Sidebar = (props: SidebarProps) => {
 
             // Badge if present
             item.badge.map(badgeText =>
-              if (!collapsed || !props.collapsible) {
+              if (!isCollapsed) {
                 div(
                   cls := s"badge badge-sm badge-${item.badgeVariant}",
                   badgeText,
@@ -274,7 +290,7 @@ val Sidebar = (props: SidebarProps) => {
             ).orNull,
 
             // Toggle icon if showing
-            if (props.showToggleIcons && (!collapsed || !props.collapsible)) {
+            if (props.showToggleIcons && !isCollapsed) {
               div(
                 cls := "text-base-content/70",
                 if (isExpanded) {
@@ -331,14 +347,14 @@ val Sidebar = (props: SidebarProps) => {
                 icon,
               ),
             ).orNull,
-            if (!collapsed || !props.collapsible) {
+            if (!isCollapsed) {
               span(item.title)
             } else null,
           ),
 
           // Badge if present
           item.badge.map(badgeText =>
-            if (!collapsed || !props.collapsible) {
+            if (!isCollapsed) {
               div(
                 cls := s"badge badge-sm badge-${item.badgeVariant}",
                 badgeText,
@@ -349,7 +365,7 @@ val Sidebar = (props: SidebarProps) => {
       },
 
       // Render children if expanded
-      if (hasChildren && isExpanded && (!collapsed || !props.collapsible)) {
+      if (hasChildren && isExpanded && !isCollapsed) {
         ul(
           cls := "pl-4 mt-1",
           item.items.map(childItem =>
@@ -365,19 +381,21 @@ val Sidebar = (props: SidebarProps) => {
     if (props.collapsible) {
       button(
         cls     := "btn btn-sm btn-ghost",
-        onClick := (() => setCollapsed(!collapsed)),
+        onClick := (() => toggleCollapsed()),
         svg(
           xmlns   := "http://www.w3.org/2000/svg",
           cls     := "h-5 w-5",
           viewBox := "0 0 20 20",
           fill    := "currentColor",
-          if (collapsed) {
+          if (isCollapsed) {
+            // When collapsed, show right-facing chevron (expand)
             path(
               fillRule := "evenodd",
               d := "M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z",
               clipRule := "evenodd",
             )
           } else {
+            // When expanded, show left-facing chevron (collapse)
             path(
               fillRule := "evenodd",
               d := "M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z",
