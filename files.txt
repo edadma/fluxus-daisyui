@@ -1,21 +1,23 @@
 ; fluxus-daisyui library sources
 
+# example apps
+./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
+AvatarTest.scala
+main.scala
+SelectTest.scala
+SimpleComponentTest.scala
+SpinnerTest.scala
+TableExample.scala
+
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
 Avatar.scala
 Button.scala
 Card.scala
 Container.scala
+Select.scala
 Spinner.scala
 Table.scala
-
-# example apps
-./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
-AvatarTest.scala
-main.scala
-SimpleComponentTest.scala
-SpinnerTest.scala
-TableExample.scala
 
 # build files
 ./
