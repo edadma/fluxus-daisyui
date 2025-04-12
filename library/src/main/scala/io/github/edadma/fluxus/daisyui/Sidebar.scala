@@ -39,6 +39,14 @@ case class SidebarProps(
     showToggleIcons: Boolean = true,        // Whether to show the toggle icons for collapsible sections
     className: String = "",
     menuClassName: String = "",
+
+    // Category styling options
+    categoryClass: String = "",      // Class for entire category header
+    categoryTitleClass: String = "", // Class for category title text
+    categoryIconClass: String = "",  // Class for category icon
+    itemClass: String = "",          // Class for regular items
+    itemTitleClass: String = "",     // Class for regular item title text
+    itemIconClass: String = "",      // Class for regular item icon
 )
 
 /** Sidebar component with collapsible sections and responsive design
@@ -50,6 +58,7 @@ case class SidebarProps(
   *   - Active item highlighting
   *   - Badges for menu items
   *   - Mobile-friendly
+  *   - Distinct category and item styling
   */
 val Sidebar = (props: SidebarProps) => {
   // State for tracking which sections are expanded
@@ -240,9 +249,18 @@ val Sidebar = (props: SidebarProps) => {
     val itemPath    = if (parentPath.isEmpty) item.id else s"$parentPath-${item.id}"
     val hasChildren = item.items.nonEmpty
     val isExpanded  = expandedSections.contains(itemPath)
+    val isTopLevel  = level == 0
 
     // Check if this item or any of its children is active
     val isActive = item.isActive || item.items.exists(child => isItemOrChildActive(child, itemPath))
+
+    // Determine if this is a category header (top-level with children)
+    val isCategory = isTopLevel && hasChildren
+
+    // Apply appropriate classes based on item type (category header or regular item)
+    val containerClass = if (isCategory) props.categoryClass else props.itemClass
+    val titleClass     = if (isCategory) props.categoryTitleClass else props.itemTitleClass
+    val iconClass      = if (isCategory) props.categoryIconClass else props.itemIconClass
 
     li(
       key := itemPath,
@@ -250,12 +268,12 @@ val Sidebar = (props: SidebarProps) => {
       if (hasChildren) {
         // Element for a collapsible section header
         div(
-          cls := s"flex justify-between items-center ${if (isActive) "active font-medium" else ""} ${
+          cls := s"flex justify-between items-center ${if (isActive) "active" else ""} ${
               if (item.disabled) "disabled opacity-50" else "cursor-pointer"
-            }",
+            } ${containerClass}",
           onClick := (() => {
             if (!item.disabled) {
-              // The key change: toggle this specific section and mark manual closure
+              // Toggle this specific section and mark manual closure
               toggleSection(itemPath)
               item.onClick.foreach(_())
             }
@@ -266,12 +284,15 @@ val Sidebar = (props: SidebarProps) => {
             cls := "flex items-center gap-2",
             item.icon.map(icon =>
               div(
-                cls := "w-5 h-5 flex items-center justify-center",
+                cls := s"w-5 h-5 flex items-center justify-center ${iconClass}",
                 icon,
               ),
             ).orNull,
             if (!isCollapsed) {
-              span(item.title)
+              span(
+                cls := titleClass,
+                item.title,
+              )
             } else null,
           ),
 
@@ -328,7 +349,7 @@ val Sidebar = (props: SidebarProps) => {
           href := item.href.getOrElse("#"),
           cls := s"${if (item.isActive) "active" else ""} ${
               if (item.disabled) "disabled opacity-50 pointer-events-none" else ""
-            }",
+            } ${containerClass}",
           onClick := ((e: dom.MouseEvent) => {
             if (item.href.isEmpty || item.href.contains("#")) {
               e.preventDefault()
@@ -343,12 +364,15 @@ val Sidebar = (props: SidebarProps) => {
             cls := "flex items-center gap-2",
             item.icon.map(icon =>
               div(
-                cls := "w-5 h-5 flex items-center justify-center",
+                cls := s"w-5 h-5 flex items-center justify-center ${iconClass}",
                 icon,
               ),
             ).orNull,
             if (!isCollapsed) {
-              span(item.title)
+              span(
+                cls := titleClass,
+                item.title,
+              )
             } else null,
           ),
 

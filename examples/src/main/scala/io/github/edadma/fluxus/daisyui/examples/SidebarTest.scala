@@ -5,8 +5,26 @@ import io.github.edadma.fluxus.daisyui._
 import org.scalajs.dom
 
 def SidebarTest: FluxusNode = {
-  // Icons for demo purposes
-  def HomeIcon: FluxusNode = {
+  // Length & Distance icon
+  def LengthIcon: FluxusNode = {
+    svg(
+      xmlns          := "http://www.w3.org/2000/svg",
+      width          := "20",
+      height         := "20",
+      viewBox        := "0 0 24 24",
+      fill           := "none",
+      stroke         := "currentColor",
+      strokeWidth    := "2",
+      strokeLinecap  := "round",
+      strokeLinejoin := "round",
+      createElement("rect", "x1" := "2", "y1" := "12", "x2" := "22", "y2" := "12"),
+      polyline(points            := "18 8 22 12 18 16"),
+      polyline(points            := "6 8 2 12 6 16"),
+    )
+  }
+
+  // Weight & Mass icon
+  def WeightIcon: FluxusNode = {
     svg(
       xmlns          := "http://www.w3.org/2000/svg",
       width          := "20",
@@ -18,15 +36,14 @@ def SidebarTest: FluxusNode = {
       strokeLinecap  := "round",
       strokeLinejoin := "round",
       path(
-        d := "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+        d := "M8 2h8a2 2 0 0 1 2 2v2.95a5 5 0 0 1 1.86 1.48A5 5 0 0 1 21 12a5 5 0 0 1-1.14 3.17A5 5 0 0 1 18 16.33V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-3.73a5 5 0 0 1-1.86-1.43A5 5 0 0 1 3 12a5 5 0 0 1 1.14-3.12A5 5 0 0 1 6 7.45V4a2 2 0 0 1 2-2z",
       ),
-      polyline(
-        points := "9 22 9 12 15 12 15 22",
-      ),
+      path(d := "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"),
     )
   }
 
-  def UsersIcon: FluxusNode = {
+  // Temperature icon
+  def TemperatureIcon: FluxusNode = {
     svg(
       xmlns          := "http://www.w3.org/2000/svg",
       width          := "20",
@@ -37,24 +54,12 @@ def SidebarTest: FluxusNode = {
       strokeWidth    := "2",
       strokeLinecap  := "round",
       strokeLinejoin := "round",
-      path(
-        d := "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2",
-      ),
-      circle(
-        cx := "9",
-        cy := "7",
-        r  := "4",
-      ),
-      path(
-        d := "M23 21v-2a4 4 0 0 0-3-3.87",
-      ),
-      path(
-        d := "M16 3.13a4 4 0 0 1 0 7.75",
-      ),
+      path(d := "M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"),
     )
   }
 
-  def SettingsIcon: FluxusNode = {
+  // Area icon
+  def AreaIcon: FluxusNode = {
     svg(
       xmlns          := "http://www.w3.org/2000/svg",
       width          := "20",
@@ -65,370 +70,228 @@ def SidebarTest: FluxusNode = {
       strokeWidth    := "2",
       strokeLinecap  := "round",
       strokeLinejoin := "round",
-      circle(
-        cx := "12",
-        cy := "12",
-        r  := "3",
-      ),
-      path(
-        d := "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z",
-      ),
+      rect("x" := "3", "y" := "3", width := "18", height := "18", "rx" := "2", "ry" := "2"),
     )
   }
 
-  def FilesIcon: FluxusNode = {
-    svg(
-      xmlns          := "http://www.w3.org/2000/svg",
-      width          := "20",
-      height         := "20",
-      viewBox        := "0 0 24 24",
-      fill           := "none",
-      stroke         := "currentColor",
-      strokeWidth    := "2",
-      strokeLinecap  := "round",
-      strokeLinejoin := "round",
-      path(
-        d := "M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z",
-      ),
-      polyline(
-        points := "13 2 13 9 20 9",
-      ),
-    )
-  }
+  // State for the active conversion
+  val (activeConversion, setActiveConversion, _) = useState("meters-to-feet")
 
-  def MessagesIcon: FluxusNode = {
-    svg(
-      xmlns          := "http://www.w3.org/2000/svg",
-      width          := "20",
-      height         := "20",
-      viewBox        := "0 0 24 24",
-      fill           := "none",
-      stroke         := "currentColor",
-      strokeWidth    := "2",
-      strokeLinecap  := "round",
-      strokeLinejoin := "round",
-      path(
-        d := "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
-      ),
-    )
-  }
-
-  // State for the active navigation item
-  val (activeNavId, setActiveNavId, _) = useState("dashboard")
-
-  // State for showing the alert
-  val (showAlert, setShowAlert, _)       = useState(false)
-  val (alertMessage, setAlertMessage, _) = useState("")
-
-  // State for collapsible sidebar toggle - now using a single state for both buttons
-  val (isCollapsed, setIsCollapsed, _) = useState(false)
-
-  // Handle navigation click
+  // Handle navigation
   def handleNavigation(id: String, item: NavItem): Unit = {
-    setActiveNavId(id)
-    setAlertMessage(s"Navigated to: ${item.title}")
-    setShowAlert(true)
-    // Hide the alert after 3 seconds
-    dom.window.setTimeout(() => setShowAlert(false), 3000)
+    setActiveConversion(id)
   }
 
-  // Create navigation items for demo
-  val sidebarItems = List(
+  // Conversion categories
+  val conversionItems = List(
     NavItem(
-      id = "dashboard",
-      title = "Dashboard",
-      icon = Some(HomeIcon),
-      href = Some("#dashboard"),
-      isActive = activeNavId == "dashboard",
-    ),
-    NavItem(
-      id = "users",
-      title = "Users",
-      icon = Some(UsersIcon),
+      id = "length",
+      title = "Length & Distance",
+      icon = Some(LengthIcon),
       items = List(
         NavItem(
-          id = "all-users",
-          title = "All Users",
-          href = Some("#all-users"),
-          isActive = activeNavId == "users-all-users",
+          id = "meters-to-feet",
+          title = "Meters to Feet",
+          isActive = activeConversion == "meters-to-feet",
         ),
         NavItem(
-          id = "add-user",
-          title = "Add User",
-          href = Some("#add-user"),
-          isActive = activeNavId == "users-add-user",
-          badge = Some("New"),
-          badgeVariant = "success",
+          id = "feet-to-meters",
+          title = "Feet to Meters",
+          isActive = activeConversion == "feet-to-meters",
         ),
         NavItem(
-          id = "user-roles",
-          title = "User Roles",
-          href = Some("#user-roles"),
-          isActive = activeNavId == "users-user-roles",
+          id = "inches-to-cm",
+          title = "Inches to Centimeters",
+          isActive = activeConversion == "inches-to-cm",
+        ),
+        NavItem(
+          id = "cm-to-inches",
+          title = "Centimeters to Inches",
+          isActive = activeConversion == "cm-to-inches",
         ),
       ),
     ),
     NavItem(
-      id = "messages",
-      title = "Messages",
-      icon = Some(MessagesIcon),
-      badge = Some("5"),
-      badgeVariant = "error",
-      href = Some("#messages"),
-      isActive = activeNavId == "messages",
-    ),
-    NavItem(
-      id = "files",
-      title = "Files",
-      icon = Some(FilesIcon),
+      id = "weight",
+      title = "Weight & Mass",
+      icon = Some(WeightIcon),
       items = List(
         NavItem(
-          id = "documents",
-          title = "Documents",
-          href = Some("#documents"),
-          isActive = activeNavId == "files-documents",
-          items = List(
-            NavItem(
-              id = "contracts",
-              title = "Contracts",
-              href = Some("#contracts"),
-              isActive = activeNavId == "files-documents-contracts",
-            ),
-            NavItem(
-              id = "reports",
-              title = "Reports",
-              href = Some("#reports"),
-              isActive = activeNavId == "files-documents-reports",
-            ),
-          ),
+          id = "kg-to-pounds",
+          title = "Kilograms to Pounds",
+          isActive = activeConversion == "kg-to-pounds",
         ),
         NavItem(
-          id = "images",
-          title = "Images",
-          href = Some("#images"),
-          isActive = activeNavId == "files-images",
+          id = "pounds-to-kg",
+          title = "Pounds to Kilograms",
+          isActive = activeConversion == "pounds-to-kg",
         ),
         NavItem(
-          id = "videos",
-          title = "Videos",
-          href = Some("#videos"),
-          isActive = activeNavId == "files-videos",
+          id = "grams-to-ounces",
+          title = "Grams to Ounces",
+          isActive = activeConversion == "grams-to-ounces",
+        ),
+        NavItem(
+          id = "ounces-to-grams",
+          title = "Ounces to Grams",
+          isActive = activeConversion == "ounces-to-grams",
         ),
       ),
     ),
     NavItem(
-      id = "settings",
-      title = "Settings",
-      icon = Some(SettingsIcon),
-      href = Some("#settings"),
-      isActive = activeNavId == "settings",
+      id = "temperature",
+      title = "Temperature",
+      icon = Some(TemperatureIcon),
+      items = List(
+        NavItem(
+          id = "celsius-to-fahrenheit",
+          title = "Celsius to Fahrenheit",
+          isActive = activeConversion == "celsius-to-fahrenheit",
+        ),
+        NavItem(
+          id = "fahrenheit-to-celsius",
+          title = "Fahrenheit to Celsius",
+          isActive = activeConversion == "fahrenheit-to-celsius",
+        ),
+        NavItem(
+          id = "celsius-to-kelvin",
+          title = "Celsius to Kelvin",
+          isActive = activeConversion == "celsius-to-kelvin",
+        ),
+        NavItem(
+          id = "kelvin-to-celsius",
+          title = "Kelvin to Celsius",
+          isActive = activeConversion == "kelvin-to-celsius",
+        ),
+      ),
     ),
     NavItem(
-      id = "disabled-item",
-      title = "Disabled Item",
-      disabled = true,
-      href = Some("#nowhere"),
+      id = "area",
+      title = "Area",
+      icon = Some(AreaIcon),
+      items = List(
+        NavItem(
+          id = "sqmeters-to-sqfeet",
+          title = "Square Meters to Square Feet",
+          isActive = activeConversion == "sqmeters-to-sqfeet",
+        ),
+        NavItem(
+          id = "sqfeet-to-sqmeters",
+          title = "Square Feet to Square Meters",
+          isActive = activeConversion == "sqfeet-to-sqmeters",
+        ),
+        NavItem(
+          id = "acres-to-hectares",
+          title = "Acres to Hectares",
+          isActive = activeConversion == "acres-to-hectares",
+        ),
+        NavItem(
+          id = "hectares-to-acres",
+          title = "Hectares to Acres",
+          isActive = activeConversion == "hectares-to-acres",
+        ),
+      ),
     ),
   )
+
+  // State for sidebar collapse
+  val (isSidebarCollapsed, setIsSidebarCollapsed, _) = useState(false)
 
   Container <> ContainerProps(
     className = "py-8",
     children = div(
       h1(
         cls := "text-3xl font-bold mb-8 text-center",
-        "Sidebar Component Demo",
-      ),
-
-      // Fixed height alert area to prevent layout jumping
-      div(
-        cls := "h-16 mb-4", // Fixed height container
-        if (showAlert) {
-          div(
-            cls := "alert alert-info",
-            div(
-              cls := "flex-1",
-              svg(
-                xmlns   := "http://www.w3.org/2000/svg",
-                fill    := "none",
-                viewBox := "0 0 24 24",
-                stroke  := "currentColor",
-                cls     := "w-6 h-6 mx-2",
-                path(
-                  strokeLinecap  := "round",
-                  strokeLinejoin := "round",
-                  strokeWidth    := "2",
-                  d              := "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-                ),
-              ),
-              label(alertMessage),
-            ),
-          )
-        } else null,
+        "Styled Category Sidebar Demo",
       ),
       div(
-        cls := "flex flex-wrap md:flex-nowrap gap-8",
+        cls := "flex flex-col md:flex-row gap-6",
 
-        // Default Sidebar
+        // Light theme sidebar (default style)
         div(
-          cls := "w-full md:w-auto",
+          cls := "w-full md:w-1/2",
           Card <> CardProps(
-            title = Some("Default Sidebar"),
-            className = "mb-8",
+            title = Some("Light Theme Converter Sidebar"),
+            className = "mb-6",
             children = div(
-              Sidebar <> SidebarProps(
-                items = sidebarItems,
-                expandedSections = List("users"),
-                onNavigation = Some(handleNavigation),
-                bgClass = "bg-base-100",
-                bordered = true,
-                width = "w-60",
-              ),
-            ),
-          ),
-        ),
-
-        // Compact Sidebar
-        div(
-          cls := "w-full md:w-auto",
-          Card <> CardProps(
-            title = Some("Compact Style"),
-            className = "mb-8",
-            children = div(
-              Sidebar <> SidebarProps(
-                items = sidebarItems,
-                variant = "compact",
-                size = "sm",
-                onNavigation = Some(handleNavigation),
-                bgClass = "bg-base-200",
-                width = "w-48",
-              ),
-            ),
-          ),
-        ),
-
-        // Collapsible Sidebar - improved with synchronized controls
-        div(
-          cls := "w-full md:w-auto",
-          Card <> CardProps(
-            title = Some("Collapsible Sidebar"),
-            className = "mb-8",
-            children = div(
+              cls := "bg-base-100 p-2 rounded-box",
               div(
                 cls := "mb-3 text-center",
                 button(
                   cls     := "btn btn-sm btn-primary",
-                  onClick := (() => setIsCollapsed(!isCollapsed)),
-                  if (isCollapsed) "Expand Sidebar" else "Collapse Sidebar",
+                  onClick := (() => setIsSidebarCollapsed(!isSidebarCollapsed)),
+                  if (isSidebarCollapsed) "Expand Sidebar" else "Collapse Sidebar",
                 ),
               ),
               div(
-                cls := "flex border border-base-300 rounded-box overflow-hidden",
-                // Sidebar with controlled collapsed state and callback
-                div(
-                  cls := "transition-all duration-300 border-r border-base-300",
-                  Sidebar <> SidebarProps(
-                    items = sidebarItems,
-                    collapsible = true,
-                    collapsed = isCollapsed,
-                    onCollapseChange =
-                      Some(setIsCollapsed), // Important: connecting the external toggle with the component
-                    onNavigation = Some(handleNavigation),
-                    bgClass = "bg-primary bg-opacity-10",
-                    bordered = false,
-                    width = "w-60",
-                    collapsedWidth = "w-16",
-                  ),
-                ),
+                cls := "border border-base-300 rounded-box overflow-hidden",
+                Sidebar <> SidebarProps(
+                  items = conversionItems,
+                  expandedSections = List("length", "weight"),
+                  onNavigation = Some(handleNavigation),
+                  collapsible = true,
+                  collapsed = isSidebarCollapsed,
+                  onCollapseChange = Some(setIsSidebarCollapsed),
+                  showToggleIcons = true,
+                  width = "w-64",
+                  collapsedWidth = "w-16",
 
-                // Content area to make width change visible
-                div(
-                  cls := "flex-1 min-h-[400px] bg-base-100 p-4",
-                  h3(cls := "text-lg font-bold mb-2", "Content Area"),
-                  p(
-                    cls := "text-sm text-base-content/70",
-                    "This demonstrates how the sidebar collapses and the content area expands.",
-                  ),
-                  p(
-                    cls := "text-sm text-base-content/70 mt-2",
-                    if (isCollapsed) "The sidebar is now in collapsed state." else "The sidebar is now expanded.",
-                  ),
-                  div(
-                    cls := "mt-4 p-3 bg-base-200 rounded-box text-sm",
-                    "Active item: ",
-                    span(cls := "font-bold", activeNavId),
-                  ),
+                  // The key styling that makes category headers distinct
+                  categoryClass = "font-medium",
+                  categoryTitleClass = "text-primary",
+                  categoryIconClass = "text-primary",
+                  itemClass = "text-base-content",
+                  itemTitleClass = "text-base-content/90 text-sm",
+                  itemIconClass = "",
                 ),
+              ),
+            ),
+          ),
+        ),
+
+        // Dark theme sidebar
+        div(
+          cls := "w-full md:w-1/2",
+          Card <> CardProps(
+            title = Some("Dark Theme Converter Sidebar"),
+            className = "mb-6",
+            children = div(
+              cls := "bg-neutral text-neutral-content p-2 rounded-box",
+              Sidebar <> SidebarProps(
+                items = conversionItems,
+                expandedSections = List("length"),
+                onNavigation = Some(handleNavigation),
+
+                // Dark theme base styling
+                bgClass = "bg-neutral",
+                textClass = "text-neutral-content",
+
+                // Category and item distinction
+                categoryClass = "font-medium",
+                categoryTitleClass = "text-primary-content text-blue-300",
+                categoryIconClass = "text-blue-300",
+                itemClass = "",
+                itemTitleClass = "opacity-80 text-sm",
+                itemIconClass = "opacity-70",
               ),
             ),
           ),
         ),
       ),
 
-      // Additional variants
-      div(
-        cls := "grid grid-cols-1 md:grid-cols-2 gap-8 mt-8",
-
-        // Boxed style
-        Card <> CardProps(
-          title = Some("Boxed Style"),
-          className = "mb-8",
-          children = div(
-            Sidebar <> SidebarProps(
-              items = sidebarItems,
-              variant = "boxed",
-              expandedSections = List("files", "files-documents"),
-              onNavigation = Some(handleNavigation),
-              width = "w-full",
-            ),
-          ),
-        ),
-
-        // Large Size
-        Card <> CardProps(
-          title = Some("Large Size"),
-          className = "mb-8",
-          children = div(
-            Sidebar <> SidebarProps(
-              items = sidebarItems.take(3),
-              size = "lg",
-              onNavigation = Some(handleNavigation),
-              bgClass = "bg-neutral text-neutral-content",
-              width = "w-full",
-            ),
-          ),
-        ),
-      ),
-
-      // Integration example with content
+      // Conversion display area
       Card <> CardProps(
-        title = Some("Sidebar with Content Example"),
-        className = "mt-8",
+        title = Some("Selected Conversion"),
+        className = "mt-6",
         children = div(
-          cls := "flex flex-col md:flex-row gap-4",
-          div(
-            cls := "w-full md:w-64",
-            Sidebar <> SidebarProps(
-              items = sidebarItems,
-              onNavigation = Some(handleNavigation),
-              bordered = true,
-              bgClass = "bg-base-200",
-              width = "w-full md:w-64",
-            ),
+          cls := "p-4 bg-base-200 rounded-box",
+          h3(
+            cls := "text-xl font-bold",
+            activeConversion.split("-").map(part => part.capitalize).mkString(" to "),
           ),
-          div(
-            cls := "flex-1 bg-base-100 p-4 rounded-box border border-base-300",
-            h3(
-              cls := "text-xl font-bold mb-3",
-              "Content Area",
-            ),
-            p(
-              cls := "mb-3",
-              "This demonstrates how the sidebar would look integrated with content. Click on sidebar items to see the navigation in action.",
-            ),
-            p(
-              cls := "text-base-content/70",
-              s"Active section: $activeNavId",
-            ),
+          p(
+            cls := "mt-2",
+            "This area would show the conversion interface. Click on different conversions in the sidebar to see this update.",
           ),
         ),
       ),
