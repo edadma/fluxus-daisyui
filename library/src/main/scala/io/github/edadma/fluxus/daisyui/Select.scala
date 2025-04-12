@@ -42,6 +42,7 @@ case class SelectProps(
   *   - Different sizes and styles
   *   - Disabled state
   *   - Border highlight on hover or focus
+  *   - Smooth dropdown animation
   */
 val Select = (props: SelectProps) => {
   // State for dropdown visibility
@@ -125,7 +126,7 @@ val Select = (props: SelectProps) => {
   val displayText     = selectedOption.map(_.label).getOrElse(props.placeholder)
   val showPlaceholder = selectedOption.isEmpty
 
-  // Check if we need to show the clear button - now visible when dropdown is open too
+  // Check if we need to show the clear button
   val showClear = props.allowClear && props.value.isDefined && !props.disabled && (isHovered || isOpen)
 
   // Build border classes - now accounting for open state too
@@ -181,10 +182,20 @@ val Select = (props: SelectProps) => {
 
       // Right section with control elements
       div(
-        cls := "flex items-center space-x-2",
+        cls := "flex items-center",
 
-        // Clear button if enabled and value is selected and component is hovered or open
+        // Loading spinner
+        if (props.loading)
+          Spinner <> SpinnerProps(
+            size = "xs",
+            variant = "spinner-dots",
+            className = "mr-2",
+          )
+        else null,
+
+        // Now we either show the clear button OR the chevron, not both
         if (showClear)
+          // Clear button if enabled, value is selected, and component is hovered/open
           button(
             typ     := "button",
             cls     := "flex items-center justify-center h-5 w-5 rounded-full hover:bg-base-300",
@@ -203,25 +214,18 @@ val Select = (props: SelectProps) => {
               ),
             ),
           )
-        else null,
-
-        // Loading spinner
-        if (props.loading)
-          Spinner <> SpinnerProps(
-            size = "xs",
-            variant = "spinner-dots",
-          )
-        else null,
-
-        // Chevron (only this indicator now)
-        ChevronIcon(isOpen),
+        else
+          // Chevron only shown when clear button is not visible
+          ChevronIcon(isOpen),
       ),
     ),
 
-    // Dropdown menu
+    // Dropdown menu with animation
     if (isOpen && !props.disabled)
       div(
-        cls := "absolute z-50 mt-1 w-full rounded-md bg-base-100 shadow-lg border border-base-300",
+        cls := "absolute z-50 mt-1 w-full rounded-md bg-base-100 shadow-lg border border-base-300 " +
+          "transition-all duration-700 transform origin-top " +
+          "animate-in fade-in-0 zoom-in-95",
         div(
           cls := "py-1 max-h-60 overflow-auto",
           props.options.map(option =>
