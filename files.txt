@@ -5,6 +5,7 @@
 AvatarTest.scala
 main.scala
 SelectTest.scala
+SidebarTest.scala
 SimpleComponentTest.scala
 SpinnerTest.scala
 TableExample.scala
@@ -16,6 +17,7 @@ Button.scala
 Card.scala
 Container.scala
 Select.scala
+Sidebar.scala
 Spinner.scala
 Table.scala
 
