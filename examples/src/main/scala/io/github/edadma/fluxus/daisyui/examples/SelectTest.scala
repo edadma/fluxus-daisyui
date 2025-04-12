@@ -8,6 +8,17 @@ def SelectTest: FluxusNode = {
   val (selectedValue1, setSelectedValue1, _) = useState[Option[String]](None)
   val (selectedValue2, setSelectedValue2, _) = useState[Option[String]](Some("2")) // Pre-selected
 
+  // States for variants section
+  val (smallSizeValue, setSmallSizeValue, _)     = useState[Option[String]](None)
+  val (largeSizeValue, setLargeSizeValue, _)     = useState[Option[String]](None)
+  val (customWidthValue, setCustomWidthValue, _) = useState[Option[String]](None)
+  val (borderlessValue, setBorderlessValue, _)   = useState[Option[String]](None)
+  val (loadingValue, setLoadingValue, _)         = useState[Option[String]](None)
+  val (disabledValue, setDisabledValue, _)       = useState[Option[String]](None)
+
+  // State for scrollable options
+  val (manyOptionsValue, setManyOptionsValue, _) = useState[Option[String]](None)
+
   // Sample options
   val options = List(
     SelectOption(value = "1", label = "Option 1"),
@@ -104,8 +115,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = smallSizeValue,
+              onChange = setSmallSizeValue,
               size = "sm",
               placeholder = "Small select",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${smallSizeValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
 
@@ -117,8 +134,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = largeSizeValue,
+              onChange = setLargeSizeValue,
               size = "lg",
               placeholder = "Large select",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${largeSizeValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
 
@@ -130,8 +153,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = customWidthValue,
+              onChange = setCustomWidthValue,
               width = Some("300px"),
               placeholder = "Fixed width 300px",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${customWidthValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
 
@@ -143,8 +172,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = borderlessValue,
+              onChange = setBorderlessValue,
               bordered = false,
               placeholder = "Borderless select",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${borderlessValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
 
@@ -156,8 +191,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = loadingValue,
+              onChange = setLoadingValue,
               loading = true,
               placeholder = "Loading...",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${loadingValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
 
@@ -169,8 +210,14 @@ def SelectTest: FluxusNode = {
             ),
             Select <> SelectProps(
               options = options,
+              value = disabledValue,
+              onChange = setDisabledValue,
               disabled = true,
               placeholder = "Disabled select",
+            ),
+            div(
+              cls := "text-xs mt-1 text-base-content/70",
+              s"Selected: ${disabledValue.map(v => options.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("None")}",
             ),
           ),
         ),
@@ -186,8 +233,14 @@ def SelectTest: FluxusNode = {
           ),
           Select <> SelectProps(
             options = manyOptions,
+            value = manyOptionsValue,
+            onChange = setManyOptionsValue,
             placeholder = "Select from many options",
             allowClear = true,
+          ),
+          div(
+            cls := "text-sm mt-2",
+            s"Selected: ${manyOptionsValue.map(v => manyOptions.find(_.value == v).map(_.label).getOrElse(v)).getOrElse("Nothing selected")}",
           ),
         ),
       ),
