@@ -53,6 +53,9 @@ val Sidebar = (props: SidebarProps) => {
   // State for tracking which sections are expanded
   val (expandedSections, setExpandedSections, _) = useState[Set[String]](props.expandedSections.toSet)
 
+  // State to track which sections were explicitly closed by the user
+  val (manuallyClosedSections, setManuallyClosedSections, _) = useState[Set[String]](Set())
+
   // State for tracking if the entire sidebar is collapsed (when collapsible=true)
   val (collapsed, setCollapsed, _) = useState(props.initialCollapsed)
 
@@ -74,12 +77,18 @@ val Sidebar = (props: SidebarProps) => {
     parentPaths
   }
 
-  // Toggle a section's expanded state
-  def toggleSection(sectionId: String): Unit = {
-    if (expandedSections.contains(sectionId)) {
-      setExpandedSections(expandedSections - sectionId)
-    } else {
+  // Toggle a section's expanded state - now respects manual closing
+  def toggleSection(sectionId: String, forceState: Option[Boolean] = None): Unit = {
+    val newState = forceState.getOrElse(!expandedSections.contains(sectionId))
+
+    if (newState) {
+      // Expanding section
       setExpandedSections(expandedSections + sectionId)
+      setManuallyClosedSections(manuallyClosedSections - sectionId)
+    } else {
+      // Collapsing section - mark as manually closed
+      setExpandedSections(expandedSections - sectionId)
+      setManuallyClosedSections(manuallyClosedSections + sectionId)
     }
   }
 
@@ -90,7 +99,8 @@ val Sidebar = (props: SidebarProps) => {
       item.onClick.foreach(_())
 
       // Keep parent sections expanded by adding them to expanded sections
-      val parentSections = getParentSections(id)
+      // But only expand parents that weren't manually closed by the user
+      val parentSections = getParentSections(id).filterNot(manuallyClosedSections.contains)
       if (parentSections.nonEmpty) {
         setExpandedSections(expandedSections ++ parentSections)
       }
@@ -109,21 +119,29 @@ val Sidebar = (props: SidebarProps) => {
           val currentPath = if (parentPath.isEmpty) item.id else s"$parentPath-${item.id}"
 
           if (item.isActive) {
-            // This item is active, so we'll get its parent sections
-            val parents = getParentSections(currentPath)
+            // This item is active, so we'll get its parent sections that haven't been manually closed
+            val parents = getParentSections(currentPath).filterNot(manuallyClosedSections.contains)
             parents + currentPath // Include the current path too if it has children
           } else if (item.items.nonEmpty && item.items.exists(_.isActive)) {
-            // A child is active, keep this section expanded too
-            val childActivePaths = findActiveItems(item.items, currentPath)
-            childActivePaths + currentPath
+            // A child is active, keep this section expanded too if not manually closed
+            if (!manuallyClosedSections.contains(currentPath)) {
+              val childActivePaths = findActiveItems(item.items, currentPath)
+              childActivePaths + currentPath
+            } else {
+              findActiveItems(item.items, currentPath)
+            }
           } else if (
             item.items.nonEmpty && item.items.exists(childItem =>
               childItem.items.nonEmpty && isItemOrChildActive(childItem, currentPath),
             )
           ) {
-            // A grandchild is active
-            val childActivePaths = findActiveItems(item.items, currentPath)
-            childActivePaths + currentPath
+            // A grandchild is active - expand if not manually closed
+            if (!manuallyClosedSections.contains(currentPath)) {
+              val childActivePaths = findActiveItems(item.items, currentPath)
+              childActivePaths + currentPath
+            } else {
+              findActiveItems(item.items, currentPath)
+            }
           } else {
             Set.empty[String]
           }
@@ -221,6 +239,7 @@ val Sidebar = (props: SidebarProps) => {
             }",
           onClick := (() => {
             if (!item.disabled) {
+              // The key change: toggle this specific section and mark manual closure
               toggleSection(itemPath)
               item.onClick.foreach(_())
             }
@@ -265,9 +284,9 @@ val Sidebar = (props: SidebarProps) => {
                     viewBox := "0 0 20 20",
                     fill    := "currentColor",
                     path(
-                      "fillRule" := "evenodd",
+                      fillRule := "evenodd",
                       d := "M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z",
-                      "clipRule" := "evenodd",
+                      clipRule := "evenodd",
                     ),
                   )
                 } else {
@@ -277,9 +296,9 @@ val Sidebar = (props: SidebarProps) => {
                     viewBox := "0 0 20 20",
                     fill    := "currentColor",
                     path(
-                      "fillRule" := "evenodd",
+                      fillRule := "evenodd",
                       d := "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z",
-                      "clipRule" := "evenodd",
+                      clipRule := "evenodd",
                     ),
                   )
                 },
@@ -354,15 +373,15 @@ val Sidebar = (props: SidebarProps) => {
           fill    := "currentColor",
           if (collapsed) {
             path(
-              "fillRule" := "evenodd",
+              fillRule := "evenodd",
               d := "M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z",
-              "clipRule" := "evenodd",
+              clipRule := "evenodd",
             )
           } else {
             path(
-              "fillRule" := "evenodd",
+              fillRule := "evenodd",
               d := "M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z",
-              "clipRule" := "evenodd",
+              clipRule := "evenodd",
             )
           },
         ),
