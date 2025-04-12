@@ -289,8 +289,7 @@ val Select = (props: SelectProps) => {
     if (isOpen && !props.disabled)
       div(
         cls := "absolute z-50 mt-1 w-full rounded-md bg-base-100 shadow-lg border border-base-300 " +
-          "transition-all duration-700 transform origin-top " +
-          "animate-in fade-in-0 zoom-in-95",
+          "animate-in fade-in-0 zoom-in-95 duration-200",
         role                  := "listbox",
         aria_labelledby       := "select-listbox",
         aria_activedescendant := props.value.map(v => s"option-$v").getOrElse(""),
