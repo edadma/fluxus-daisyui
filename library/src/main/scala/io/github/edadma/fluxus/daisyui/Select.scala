@@ -41,6 +41,7 @@ case class SelectProps(
   *   - Support for placeholder text
   *   - Different sizes and styles
   *   - Disabled state
+  *   - Border highlight on hover or focus
   */
 val Select = (props: SelectProps) => {
   // State for dropdown visibility
@@ -124,8 +125,21 @@ val Select = (props: SelectProps) => {
   val displayText     = selectedOption.map(_.label).getOrElse(props.placeholder)
   val showPlaceholder = selectedOption.isEmpty
 
-  // Check if we need to show the clear button
-  val showClear = props.allowClear && props.value.isDefined && !props.disabled && isHovered
+  // Check if we need to show the clear button - now visible when dropdown is open too
+  val showClear = props.allowClear && props.value.isDefined && !props.disabled && (isHovered || isOpen)
+
+  // Build border classes - now accounting for open state too
+  val borderClasses = if (props.bordered) {
+    if (isOpen) {
+      // Keep highlighted while open
+      "border border-primary transition-colors duration-200"
+    } else {
+      // Normal state with hover effect
+      "border border-base-300 hover:border-primary transition-colors duration-200"
+    }
+  } else {
+    "border-none"
+  }
 
   // Dropdown indicator icon (changes based on dropdown state)
   def ChevronIcon(isUp: Boolean): FluxusNode = {
@@ -153,8 +167,8 @@ val Select = (props: SelectProps) => {
     // Custom select trigger with hover events
     div(
       cls := s"flex items-center justify-between rounded-lg cursor-pointer ${sizePadding} ${
-          if (props.bordered) "border border-base-300" else "border-none"
-        } ${if (props.disabled) "opacity-50 cursor-not-allowed" else ""}",
+          borderClasses
+        } ${if (props.disabled) "opacity-50 cursor-not-allowed hover:border-base-300" else ""}",
       onClick      := (() => if (!props.disabled) setIsOpen(!isOpen)),
       onMouseEnter := (handleMouseEnter(_)),
       onMouseLeave := (handleMouseLeave(_)),
@@ -169,7 +183,7 @@ val Select = (props: SelectProps) => {
       div(
         cls := "flex items-center space-x-2",
 
-        // Clear button if enabled and value is selected and component is hovered
+        // Clear button if enabled and value is selected and component is hovered or open
         if (showClear)
           button(
             typ     := "button",
