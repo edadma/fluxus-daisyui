@@ -224,7 +224,7 @@ val Select = (props: SelectProps) => {
     if (isOpen && !props.disabled)
       div(
         cls := "absolute z-50 mt-1 w-full rounded-md bg-base-100 shadow-lg border border-base-300 " +
-          "transition-all duration-700 transform origin-top " +
+          "transition-all duration-200 transform origin-top " +
           "animate-in fade-in-0 zoom-in-95",
         div(
           cls := "py-1 max-h-60 overflow-auto",
