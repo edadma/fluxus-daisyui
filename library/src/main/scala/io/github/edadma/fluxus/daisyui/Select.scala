@@ -91,6 +91,8 @@ val Select = (props: SelectProps) => {
   // Width class (if specified)
   if (props.width.isDefined) {
     containerClasses += "w-full" // We'll override with inline style
+  } else {
+    containerClasses += "w-full"
   }
 
   // Add any custom classes
@@ -98,29 +100,11 @@ val Select = (props: SelectProps) => {
     props.className.split(" ").foreach(cls => containerClasses += cls)
   }
 
-  // Calculate classes for the select trigger
-  val triggerClasses = List.newBuilder[String]
-
-  // Base classes
-  triggerClasses += "select"
-  triggerClasses += "w-full"
-
-  // Size class - must use predefined Tailwind classes
-  val sizeClass = props.size match {
-    case "sm" => "select-sm"
-    case "lg" => "select-lg"
-    case _    => "select-md" // Default is medium
-  }
-  triggerClasses += sizeClass
-
-  // Border class
-  if (!props.bordered) {
-    triggerClasses += "select-borderless"
-  }
-
-  // Disabled class
-  if (props.disabled) {
-    triggerClasses += "select-disabled"
+  // Calculate size padding based on size
+  val sizePadding = props.size match {
+    case "sm" => "py-1 px-3 text-sm"
+    case "lg" => "py-3 px-5 text-lg"
+    case _    => "py-2 px-4" // Default is medium
   }
 
   // Calculate display value and placeholder
@@ -135,7 +119,7 @@ val Select = (props: SelectProps) => {
   def ChevronIcon(isUp: Boolean): FluxusNode = {
     svg(
       xmlns   := "http://www.w3.org/2000/svg",
-      cls     := "h-5 w-5",
+      cls     := "h-4 w-4",
       fill    := "none",
       viewBox := "0 0 24 24",
       stroke  := "currentColor",
@@ -154,57 +138,55 @@ val Select = (props: SelectProps) => {
     if (props.width.isDefined) style := s"width: ${props.width.get};" else null,
     ref := selectRef,
 
-    // Select trigger
+    // Custom select trigger (not using DaisyUI's select class)
     div(
-      cls     := triggerClasses.result().mkString(" "),
+      cls := s"flex items-center justify-between rounded-lg cursor-pointer ${sizePadding} ${
+          if (props.bordered) "border border-base-300" else "border-none"
+        } ${if (props.disabled) "opacity-50 cursor-not-allowed" else ""}",
       onClick := (() => if (!props.disabled) setIsOpen(!isOpen)),
+
+      // Display text
+      span(
+        cls := (if (showPlaceholder) "text-base-content/50" else "text-base-content"),
+        displayText,
+      ),
+
+      // Right section with control elements
       div(
-        cls := "flex items-center justify-between px-4 py-2 cursor-pointer",
+        cls := "flex items-center space-x-2",
 
-        // Display text
-        span(
-          cls := (if (showPlaceholder) "text-base-content/50" else "text-base-content"),
-          displayText,
-        ),
-
-        // Right section with clear button and dropdown indicator
-        div(
-          cls := "flex items-center gap-1",
-
-          // Clear button if enabled and value is selected
-          if (showClear)
-            button(
-              typ     := "button",
-              cls     := "btn btn-ghost btn-xs btn-circle",
-              onClick := ((e: dom.MouseEvent) => handleClear(e)),
-              svg(
-                xmlns       := "http://www.w3.org/2000/svg",
-                cls         := "h-4 w-4",
-                fill        := "none",
-                viewBox     := "0 0 24 24",
-                stroke      := "currentColor",
-                strokeWidth := "2",
-                path(
-                  strokeLinecap  := "round",
-                  strokeLinejoin := "round",
-                  d              := "M6 18L18 6M6 6l12 12",
-                ),
+        // Clear button if enabled and value is selected
+        if (showClear)
+          button(
+            typ     := "button",
+            cls     := "flex items-center justify-center h-5 w-5 rounded-full hover:bg-base-300",
+            onClick := ((e: dom.MouseEvent) => handleClear(e)),
+            svg(
+              xmlns       := "http://www.w3.org/2000/svg",
+              cls         := "h-3 w-3",
+              fill        := "none",
+              viewBox     := "0 0 24 24",
+              stroke      := "currentColor",
+              strokeWidth := "2",
+              path(
+                strokeLinecap  := "round",
+                strokeLinejoin := "round",
+                d              := "M6 18L18 6M6 6l12 12",
               ),
-            )
-          else null,
+            ),
+          )
+        else null,
 
-          // Loading spinner
-          if (props.loading)
-            Spinner <> SpinnerProps(
-              size = "xs",
-              variant = "spinner-dots",
-              className = "mr-1",
-            )
-          else null,
+        // Loading spinner
+        if (props.loading)
+          Spinner <> SpinnerProps(
+            size = "xs",
+            variant = "spinner-dots",
+          )
+        else null,
 
-          // Dropdown indicator
-          ChevronIcon(isOpen),
-        ),
+        // Chevron (only this indicator now)
+        ChevronIcon(isOpen),
       ),
     ),
 
