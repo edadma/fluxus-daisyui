@@ -2,7 +2,6 @@ package io.github.edadma.fluxus.daisyui.examples
 
 import io.github.edadma.fluxus._
 import io.github.edadma.fluxus.daisyui._
-import org.scalajs.dom
 
 def InputTest: FluxusNode = {
   // State for the different input examples
