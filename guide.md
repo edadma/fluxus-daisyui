@@ -536,6 +536,130 @@ AvatarGroup <> AvatarGroupProps(
 )
 ```
 
+### Badge
+
+A small tag/badge component for displaying status indicators, counts, or labels.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `String` | `""` | Badge text content |
+| `children` | `Option[FluxusNode]` | `None` | Alternative to text for complex content |
+| `variant` | `String` | `"primary"` | Badge style: primary, secondary, accent, info, success, warning, error, ghost, neutral |
+| `size` | `String` | `"md"` | Badge size: xs, sm, md, lg |
+| `outline` | `Boolean` | `false` | Whether to use outline style |
+| `empty` | `Boolean` | `false` | Render an empty badge (useful for indicators) |
+| `fullWidth` | `Boolean` | `false` | Make the badge full width |
+| `href` | `Option[String]` | `None` | Make the badge a link |
+| `target` | `Option[String]` | `None` | Target for link (_blank, _self, etc.) |
+| `ariaLabel` | `Option[String]` | `None` | Accessibility label |
+| `className` | `String` | `""` | Additional CSS classes |
+
+#### Examples
+
+##### Basic Badge Variants
+
+```scala
+// Primary badge
+Badge <> BadgeProps(text = "Primary", variant = "primary")
+
+// Secondary badge
+Badge <> BadgeProps(text = "Secondary", variant = "secondary")
+
+// Success badge
+Badge <> BadgeProps(text = "Success", variant = "success")
+
+// Warning badge
+Badge <> BadgeProps(text = "Warning", variant = "warning")
+
+// Error badge
+Badge <> BadgeProps(text = "Error", variant = "error")
+
+// Ghost badge
+Badge <> BadgeProps(text = "Tag", variant = "ghost")
+```
+
+##### Badge Sizes
+
+```scala
+Badge <> BadgeProps(text = "Extra Small", size = "xs", variant = "primary")
+Badge <> BadgeProps(text = "Small", size = "sm", variant = "primary")
+Badge <> BadgeProps(text = "Medium", size = "md", variant = "primary")
+Badge <> BadgeProps(text = "Large", size = "lg", variant = "primary")
+```
+
+##### Outline Style
+
+```scala
+Badge <> BadgeProps(text = "Outline", variant = "primary", outline = true)
+```
+
+##### Status Indicators
+
+```scala
+div(
+  cls := "flex items-center gap-2",
+  Badge <> BadgeProps(empty = true, variant = "success", className = "mr-1"),
+  span("Online")
+)
+```
+
+##### Badge as Link
+
+```scala
+Badge <> BadgeProps(
+  text = "Documentation",
+  variant = "primary",
+  href = Some("https://example.com/docs"),
+  target = Some("_blank")
+)
+```
+
+##### Badge with Custom Content
+
+```scala
+Badge <> BadgeProps(
+  variant = "info",
+  children = Some(
+    div(
+      cls := "flex items-center gap-1",
+      svg(
+        xmlns := "http://www.w3.org/2000/svg",
+        width := "12",
+        height := "12",
+        viewBox := "0 0 24 24",
+        fill := "currentColor",
+        path(d := "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z")
+      ),
+      span("New")
+    )
+  )
+)
+```
+
+##### Count Badges
+
+```scala
+div(
+  cls := "relative inline-flex",
+  Button <> ButtonProps(text = "Notifications", variant = "primary"),
+  div(
+    cls := "absolute -top-2 -right-2",
+    Badge <> BadgeProps(text = "99+", variant = "error", size = "sm")
+  )
+)
+```
+
+#### Usage Tips
+
+- **Status Indicators**: Use empty badges with color variants to show status (e.g., online/offline)
+- **Tag Groups**: Use ghost variant for tag groupings
+- **Notification Counts**: Place small badges on corners of buttons or icons for notification counts
+- **Category Labels**: Use badges to categorize items (e.g., post categories, product tags)
+- **Accessibility**: Use `ariaLabel` prop for better screen reader support
+- **Positioning**: Badges don't have positioning built in - wrap them in positioned containers when needed
+
 ### Card
 
 A versatile card component for displaying content in a contained container.
