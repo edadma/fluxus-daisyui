@@ -4,7 +4,7 @@ import io.github.edadma.fluxus._
 import io.github.edadma.fluxus.daisyui._
 import org.scalajs.dom
 
-def TableExample: FluxusNode = {
+def TableTest: FluxusNode = {
   // State for pagination
   val (currentPage, setCurrentPage, _) = useState(1)
 

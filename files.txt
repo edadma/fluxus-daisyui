@@ -2,24 +2,34 @@
 
 # example apps
 ./examples/src/main/scala/io/github/edadma/fluxus/daisyui/examples
+AlertTest.scala
 AvatarTest.scala
+BadgeTest.scala
+InputTest.scala
+LabelTest.scala
 main.scala
 SelectTest.scala
 SidebarTest.scala
 SimpleComponentTest.scala
 SpinnerTest.scala
-TableExample.scala
+TableTest.scala
+TabsTest.scala
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
+Alert.scala
 Avatar.scala
+Badge.scala
 Button.scala
 Card.scala
 Container.scala
+Input.scala
+Label.scala
 Select.scala
 Sidebar.scala
 Spinner.scala
 Table.scala
+Tabs.scala
 
 # build files
 ./
