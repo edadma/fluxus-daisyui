@@ -21,7 +21,7 @@ A comprehensive component library for [Fluxus](https://github.com/edadma/fluxus)
 Add the dependency to your `build.sbt`:
 
 ```scala
-libraryDependencies += "io.github.edadma" %%% "fluxus-daisyui" % "0.0.1"
+libraryDependencies += "io.github.edadma" %%% "fluxus-daisyui" % "0.0.2"
 ```
 
 Make sure you have Tailwind CSS and DaisyUI set up in your project. You can use the following `package.json` dependencies:
@@ -64,9 +64,9 @@ def App: FluxusNode = {
 The library provides these DaisyUI components with comprehensive styling options:
 
 - **Layout**: Container
-- **Input**: Button, Select
-- **Data Display**: Avatar, AvatarGroup, Card, Table, TableWithPagination
-- **Navigation**: Sidebar
+- **Input**: Button, Input, Label, Select
+- **Data Display**: Alert, Avatar, AvatarGroup, Badge, Card, Spinner, Table, TableWithPagination
+- **Navigation**: Sidebar, Tabs
 - **Feedback**: Spinner
 
 Each component supports the full range of DaisyUI's styling options through a type-safe props interface.
@@ -85,6 +85,19 @@ Button <> ButtonProps(
   outline = true,             // Outlined style
   startIcon = Some(HomeIcon), // Icon at start
   onClick = () => handleClick()
+)
+```
+
+### Example: Label Component
+
+```scala
+Label <> LabelProps(
+  text = "Email Address",
+  htmlFor = Some("email-input"),
+  required = true,
+  position = "top",
+  altText = Some("We'll never share your email"),
+  variant = "primary"
 )
 ```
 
