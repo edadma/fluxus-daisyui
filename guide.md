@@ -1006,6 +1006,232 @@ Sidebar <> SidebarProps(
 )
 ```
 
+### Tabs
+
+A tabbed interface component for organizing content into multiple sections.
+
+#### TabPanelProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `String` | _required_ | Unique identifier for the tab |
+| `title` | `String` | _required_ | Tab label text |
+| `icon` | `Option[FluxusNode]` | `None` | Icon to display with tab title |
+| `badge` | `Option[String]` | `None` | Badge text to display on tab |
+| `badgeVariant` | `String` | `"primary"` | Badge color variant |
+| `disabled` | `Boolean` | `false` | Whether tab is disabled |
+| `children` | `FluxusNode` | _required_ | Tab panel content |
+
+#### TabsProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `List[TabPanelProps]` | `List()` | List of tab panel configurations |
+| `activeTab` | `String` | `""` | ID of the active tab (for controlled usage) |
+| `onTabChange` | `String => Unit` | `_ => ()` | Tab change handler |
+| `variant` | `String` | `"bordered"` | Tab style: bordered, lifted, boxed |
+| `size` | `String` | `"md"` | Tab size: xs, sm, md, lg |
+| `alignment` | `String` | `"start"` | Tab alignment: start, center, end |
+| `fullWidth` | `Boolean` | `false` | Whether tabs should take full width |
+| `tabsClassName` | `String` | `""` | Additional CSS classes for tabs container |
+| `contentClassName` | `String` | `""` | Additional CSS classes for content area |
+| `contentContainerClassName` | `String` | `""` | Additional CSS classes for overall container |
+
+#### Examples
+
+##### Basic Tabs
+
+```scala
+val (activeTab, setActiveTab, _) = useState("tab1")
+
+Tabs <> TabsProps(
+  activeTab = activeTab,
+  onTabChange = setActiveTab,
+  children = List(
+    TabPanelProps(
+      id = "tab1",
+      title = "Tab 1",
+      children = div(
+        h3(cls := "text-lg font-medium mb-2", "Tab 1 Content"),
+        p("This is the content for Tab 1.")
+      )
+    ),
+    TabPanelProps(
+      id = "tab2",
+      title = "Tab 2",
+      children = div(
+        h3(cls := "text-lg font-medium mb-2", "Tab 2 Content"),
+        p("This is the content for Tab 2.")
+      )
+    ),
+    TabPanelProps(
+      id = "tab3",
+      title = "Tab 3",
+      children = div(
+        h3(cls := "text-lg font-medium mb-2", "Tab 3 Content"),
+        p("This is the content for Tab 3.")
+      )
+    )
+  )
+)
+```
+
+##### Tab Variants
+
+```scala
+// Lifted tabs
+Tabs <> TabsProps(
+  variant = "lifted",
+  children = List(
+    TabPanelProps(
+      id = "lifted1",
+      title = "Profile",
+      children = div(
+        p("Lifted tabs have a subtle curved appearance, giving a 3D-like effect.")
+      )
+    ),
+    TabPanelProps(
+      id = "lifted2",
+      title = "Settings",
+      children = div(
+        p("Settings content for the lifted tab style example.")
+      )
+    )
+  )
+)
+
+// Boxed tabs
+Tabs <> TabsProps(
+  variant = "boxed",
+  children = List(
+    TabPanelProps(
+      id = "boxed1",
+      title = "About",
+      children = div(
+        p("Boxed tabs have a contained appearance with background color.")
+      )
+    ),
+    TabPanelProps(
+      id = "boxed2",
+      title = "Features",
+      children = div(
+        p("Features content for the boxed tab style.")
+      )
+    )
+  )
+)
+```
+
+##### Tabs with Icons and Badges
+
+```scala
+Tabs <> TabsProps(
+  children = List(
+    TabPanelProps(
+      id = "home",
+      title = "Home",
+      icon = Some(
+        // Home icon SVG
+        svg(
+          xmlns := "http://www.w3.org/2000/svg",
+          width := "20",
+          height := "20",
+          viewBox := "0 0 24 24",
+          fill := "none",
+          stroke := "currentColor",
+          strokeWidth := "2",
+          strokeLinecap := "round",
+          strokeLinejoin := "round",
+          path(d := "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"),
+          polyline(points := "9 22 9 12 15 12 15 22")
+        )
+      ),
+      children = div(
+        h3(cls := "text-lg font-medium mb-2", "Home Dashboard"),
+        p("Welcome to your dashboard overview.")
+      )
+    ),
+    TabPanelProps(
+      id = "notifications",
+      title = "Notifications",
+      badge = Some("3"),
+      badgeVariant = "error",
+      children = div(
+        h3(cls := "text-lg font-medium mb-2", "Notifications"),
+        p("You have 3 unread notifications.")
+      )
+    )
+  )
+)
+```
+
+##### Tab Alignments
+
+```scala
+// Center Aligned
+Tabs <> TabsProps(
+  variant = "boxed",
+  alignment = "center",
+  children = List(
+    TabPanelProps(id = "tab1", title = "Tab 1", children = div("Content 1")),
+    TabPanelProps(id = "tab2", title = "Tab 2", children = div("Content 2")),
+    TabPanelProps(id = "tab3", title = "Tab 3", children = div("Content 3"))
+  )
+)
+
+// End Aligned
+Tabs <> TabsProps(
+  variant = "lifted",
+  alignment = "end",
+  children = List(
+    TabPanelProps(id = "tab1", title = "Tab 1", children = div("Content 1")),
+    TabPanelProps(id = "tab2", title = "Tab 2", children = div("Content 2")),
+    TabPanelProps(id = "tab3", title = "Tab 3", children = div("Content 3"))
+  )
+)
+
+// Full Width
+Tabs <> TabsProps(
+  variant = "bordered",
+  fullWidth = true,
+  children = List(
+    TabPanelProps(id = "tab1", title = "Tab 1", children = div("Content 1")),
+    TabPanelProps(id = "tab2", title = "Tab 2", children = div("Content 2")),
+    TabPanelProps(id = "tab3", title = "Tab 3", children = div("Content 3"))
+  )
+)
+```
+
+##### Disabled Tabs
+
+```scala
+Tabs <> TabsProps(
+  children = List(
+    TabPanelProps(id = "tab1", title = "Active Tab", children = div("Content 1")),
+    TabPanelProps(
+      id = "tab2", 
+      title = "Disabled Tab", 
+      disabled = true,
+      children = div("This content is not accessible")
+    ),
+    TabPanelProps(id = "tab3", title = "Another Tab", children = div("Content 3"))
+  )
+)
+```
+
+#### Usage Tips
+
+- **Controlled vs Uncontrolled**:
+    - For controlled tabs, provide both `activeTab` and `onTabChange` props
+    - For uncontrolled tabs, omit `activeTab` and the component will manage state internally
+- **Accessibility**: Tabs are implemented with proper ARIA roles for keyboard navigation and screen readers
+- **Tab Variants**:
+    - `bordered`: Default style with underline for active tab
+    - `lifted`: Tabs with curved corners that appear to lift the active tab
+    - `boxed`: Contained tabs with background colors
+- **Content Area**: The tab content area maintains a consistent height and handles transitions automatically
+- **Responsive Design**: For small screens, consider using fewer tabs or shorter tab labels
+
 ## Feedback Components
 
 ### Alert
