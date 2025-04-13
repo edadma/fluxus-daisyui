@@ -8,22 +8,23 @@ This document provides comprehensive documentation for all components in the flu
     - [Container](#container)
 - [Input Components](#input-components)
     - [Button](#button)
-    - [Select](#select)
     - [Input](#input)
     - [Label](#label)
+    - [Select](#select)
 - [Data Display Components](#data-display-components)
     - [Avatar](#avatar)
     - [AvatarGroup](#avatargroup)
+    - [Badge](#badge)
     - [Card](#card)
     - [Table](#table)
     - [TableWithPagination](#tablewithpagination)
     - [Pagination](#pagination)
 - [Navigation Components](#navigation-components)
     - [Sidebar](#sidebar)
+    - [Tabs](#tabs)
 - [Feedback Components](#feedback-components)
+    - [Alert](#alert)
     - [Spinner](#spinner)
-
----
 
 ## Layout Components
 
@@ -882,6 +883,159 @@ Sidebar <> SidebarProps(
 ```
 
 ## Feedback Components
+
+### Alert
+
+A flexible alert/notification component for displaying information, success messages, warnings, and errors.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `Option[String]` | `None` | Alert title text |
+| `message` | `Option[String]` | `None` | Alert message text |
+| `children` | `Option[FluxusNode]` | `None` | Custom alert content (overrides title/message) |
+| `variant` | `String` | `"info"` | Alert style: info, success, warning, error, neutral |
+| `icon` | `Option[FluxusNode]` | `None` | Custom icon (overrides default) |
+| `showIcon` | `Boolean` | `true` | Whether to show the default icon |
+| `hideIcon` | `Boolean` | `false` | Alternative way to hide icon (takes precedence) |
+| `actions` | `Option[FluxusNode]` | `None` | Action buttons to display |
+| `onClose` | `Option[() => Unit]` | `None` | Close handler (shows close button when provided) |
+| `className` | `String` | `""` | Additional CSS classes |
+| `compact` | `Boolean` | `false` | Whether to use compact style with less padding |
+
+#### Examples
+
+##### Basic Alert Types
+
+```scala
+// Info alert
+Alert <> AlertProps(
+  variant = "info",
+  title = Some("Information"),
+  message = Some("This is an informational alert to notify you about something.")
+)
+
+// Success alert
+Alert <> AlertProps(
+  variant = "success",
+  title = Some("Success"),
+  message = Some("Your action was completed successfully!")
+)
+
+// Warning alert
+Alert <> AlertProps(
+  variant = "warning",
+  title = Some("Warning"),
+  message = Some("Please be careful with this action.")
+)
+
+// Error alert
+Alert <> AlertProps(
+  variant = "error",
+  title = Some("Error"),
+  message = Some("Something went wrong. Please try again.")
+)
+```
+
+##### Alert with Custom Icon
+
+```scala
+Alert <> AlertProps(
+  variant = "warning",
+  title = Some("Custom Icon"),
+  message = Some("This alert uses a custom icon."),
+  icon = Some(
+    svg(
+      xmlns := "http://www.w3.org/2000/svg",
+      cls := "stroke-current shrink-0 h-6 w-6",
+      fill := "none",
+      viewBox := "0 0 24 24",
+      stroke := "currentColor",
+      path(
+        d := "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      )
+    )
+  )
+)
+```
+
+##### Dismissible Alert
+
+```scala
+val (showAlert, setShowAlert, _) = useState(true)
+
+if (showAlert) {
+  Alert <> AlertProps(
+    variant = "info",
+    title = Some("Dismissible Alert"),
+    message = Some("Click the X button to dismiss this alert."),
+    onClose = Some(() => setShowAlert(false))
+  )
+}
+```
+
+##### Alert with Actions
+
+```scala
+Alert <> AlertProps(
+  variant = "warning",
+  title = Some("Delete Account?"),
+  message = Some("You're about to delete your account. This action cannot be undone."),
+  actions = Some(
+    div(
+      cls := "flex gap-2",
+      Button <> ButtonProps(
+        text = "Cancel",
+        variant = "ghost",
+        size = "sm"
+      ),
+      Button <> ButtonProps(
+        text = "Delete",
+        variant = "warning",
+        size = "sm"
+      )
+    )
+  )
+)
+```
+
+##### Custom Alert Content
+
+```scala
+Alert <> AlertProps(
+  variant = "info",
+  children = Some(
+    div(
+      h3(cls := "font-bold", "Cookie Policy"),
+      div(
+        cls := "text-sm mt-1",
+        "This website uses cookies to ensure you get the best experience on our website."
+      ),
+      div(
+        cls := "mt-3",
+        button(
+          cls := "btn btn-sm btn-primary mr-2",
+          "Accept"
+        ),
+        button(
+          cls := "btn btn-sm btn-ghost",
+          "Decline"
+        )
+      )
+    )
+  )
+)
+```
+
+#### Usage Tips
+
+- **Alert Types**: Choose the appropriate variant (info, success, warning, error) based on the nature of the notification
+- **Accessibility**: Alerts are automatically marked with `role="alert"` for screen readers
+- **Responsive Design**: Alerts expand to fill their container width
+- **Compact Style**: Use `compact={true}` for alerts with less padding in dense UIs
+- **Flexible Content**: Use either the `title`/`message` props for simple alerts or `children` for custom content
+- **Dismissible Alerts**: Provide an `onClose` handler to make the alert dismissible with a close button
 
 ### Spinner
 
