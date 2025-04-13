@@ -343,40 +343,33 @@ val Input = (props: InputProps) => {
   // Join helper classes
   val helperClass = helperClasses.result().mkString(" ")
 
-  // Determine common input attributes
-  val commonProps = List(
-    if (props.value.isDefined) value                                      := inputValue else null,
-    if (props.defaultValue.isDefined && props.value.isEmpty) defaultValue := props.defaultValue.get else null,
-    props.name.map(n => name := n).orNull,
-    props.placeholder.map(p => placeholder := p).orNull,
-    if (props.disabled) disabled   := true else null,
-    if (props.readOnly) "readOnly" := true else null,
-    if (props.required) required   := true else null,
-    if (props.autoFocus) autofocus := true else null,
-    props.maxLength.map(ml => maxLength := ml.toString).orNull,
-    props.min.map(m => min := m).orNull,
-    props.max.map(m => max := m).orNull,
-    props.step.map(s => step := s).orNull,
-    id      := inputId.current,
-    onInput := ((e: dom.Event) => handleChange(e)),
-    onFocus := ((e: dom.FocusEvent) => handleFocus(e)),
-    onBlur  := ((e: dom.FocusEvent) => handleBlur(e)),
-    props.onKeyDown.map(fn => onKeyDown := fn).orNull,
-    props.onKeyUp.map(fn => onKeyUp := fn).orNull,
+  // Calculate the padding style based on prefix/suffix/icons
+  def getPaddingStyle: String = {
+    val paddingLeft = if (props.prefix.isDefined || props.leadingIcon.isDefined) "2.5rem" else null
+    val paddingRight =
+      if (
+        props.suffix.isDefined || props.trailingIcon.isDefined ||
+        props.showClearButton ||
+        (props.typ == "password" && props.showPasswordToggle)
+      ) "2.5rem"
+      else null
 
-    // Accessibility attributes
-    props.ariaLabel.map(l => aria_label := l).orNull,
-    aria_describedby := {
-      val ids = List(
-        if (props.helperText.isDefined) Some(helperId) else None,
-        if (props.error.isDefined) Some(errorId) else None,
-        props.ariaDescribedBy,
-      ).flatten
+    List(
+      if (paddingLeft != null) s"padding-left: $paddingLeft" else "",
+      if (paddingRight != null) s"padding-right: $paddingRight" else "",
+    ).filter(_.nonEmpty).mkString("; ")
+  }
 
-      if (ids.isEmpty) null else ids.mkString(" ")
-    },
-    if (props.ariaInvalid.getOrElse(props.error.isDefined)) aria_invalid := "true" else null,
-  ).filter(_ != null)
+  // Create aria-describedby value
+  def getAriaDescribedBy: Option[String] = {
+    val ids = List(
+      if (props.helperText.isDefined) Some(helperId) else None,
+      if (props.error.isDefined) Some(errorId) else None,
+      props.ariaDescribedBy,
+    ).flatten
+
+    if (ids.isEmpty) None else Some(ids.mkString(" "))
+  }
 
   // Render the component
   div(
@@ -433,52 +426,79 @@ val Input = (props: InputProps) => {
         )
       } else null,
 
-      // Input element or textarea
+      // Input element or textarea (with attributes applied individually)
       if (isTextarea) {
         textarea(
           cls := textareaClass,
-          props.rows.map(r => rows := r.toString).orNull,
-          commonProps,
+          id  := inputId.current,
 
-          // Adjust padding if we have prefix/leading icon
-          style := {
-            val paddingLeft = if (props.prefix.isDefined || props.leadingIcon.isDefined) "2.5rem" else null
-            val paddingRight =
-              if (
-                props.suffix.isDefined || props.trailingIcon.isDefined ||
-                props.showClearButton ||
-                (props.typ == "password" && props.showPasswordToggle)
-              ) "2.5rem"
-              else null
+          // Apply rows if defined
+          if (props.rows.isDefined) rows := props.rows.get.toString else null,
 
-            List(
-              if (paddingLeft != null) s"padding-left: $paddingLeft" else "",
-              if (paddingRight != null) s"padding-right: $paddingRight" else "",
-            ).filter(_.nonEmpty).mkString("; ")
-          },
+          // Apply value or defaultValue if defined (but not both)
+          if (props.value.isDefined) value                                      := inputValue else null,
+          if (props.defaultValue.isDefined && props.value.isEmpty) defaultValue := props.defaultValue.get else null,
+
+          // Apply other input attributes if defined
+          if (props.name.isDefined) name               := props.name.get else null,
+          if (props.placeholder.isDefined) placeholder := props.placeholder.get else null,
+          if (props.disabled) disabled                 := true else null,
+          if (props.readOnly) "readOnly"               := true else null,
+          if (props.required) required                 := true else null,
+          if (props.autoFocus) autofocus               := true else null,
+          if (props.maxLength.isDefined) maxLength     := props.maxLength.get.toString else null,
+
+          // Apply event handlers
+          onInput := ((e: dom.Event) => handleChange(e)),
+          onFocus := ((e: dom.FocusEvent) => handleFocus(e)),
+          onBlur  := ((e: dom.FocusEvent) => handleBlur(e)),
+          if (props.onKeyDown.isDefined) onKeyDown := props.onKeyDown.get else null,
+          if (props.onKeyUp.isDefined) onKeyUp     := props.onKeyUp.get else null,
+
+          // Apply accessibility attributes
+          if (props.ariaLabel.isDefined) aria_label                            := props.ariaLabel.get else null,
+          if (getAriaDescribedBy.isDefined) aria_describedby                   := getAriaDescribedBy.get else null,
+          if (props.ariaInvalid.getOrElse(props.error.isDefined)) aria_invalid := "true" else null,
+
+          // Apply padding style if needed
+          if (getPaddingStyle.nonEmpty) style := getPaddingStyle else null,
         )
       } else {
         input(
           typ := effectiveType,
           cls := inputClass,
-          commonProps,
+          id  := inputId.current,
 
-          // Adjust padding if we have prefix/leading icon
-          style := {
-            val paddingLeft = if (props.prefix.isDefined || props.leadingIcon.isDefined) "2.5rem" else null
-            val paddingRight =
-              if (
-                props.suffix.isDefined || props.trailingIcon.isDefined ||
-                props.showClearButton ||
-                (props.typ == "password" && props.showPasswordToggle)
-              ) "2.5rem"
-              else null
+          // Apply value or defaultValue if defined (but not both)
+          if (props.value.isDefined) value                                      := inputValue else null,
+          if (props.defaultValue.isDefined && props.value.isEmpty) defaultValue := props.defaultValue.get else null,
 
-            List(
-              if (paddingLeft != null) s"padding-left: $paddingLeft" else "",
-              if (paddingRight != null) s"padding-right: $paddingRight" else "",
-            ).filter(_.nonEmpty).mkString("; ")
-          },
+          // Apply other input attributes if defined
+          if (props.name.isDefined) name               := props.name.get else null,
+          if (props.placeholder.isDefined) placeholder := props.placeholder.get else null,
+          if (props.disabled) disabled                 := true else null,
+          if (props.readOnly) "readOnly"               := true else null,
+          if (props.required) required                 := true else null,
+          if (props.autoFocus) autofocus               := true else null,
+          if (props.maxLength.isDefined) maxLength     := props.maxLength.get.toString else null,
+          if (props.min.isDefined) min                 := props.min.get else null,
+          if (props.max.isDefined) max                 := props.max.get else null,
+          if (props.step.isDefined) step               := props.step.get else null,
+
+          // Apply event handlers
+          onInput := ((e: dom.Event) => handleChange(e)),
+          onFocus := ((e: dom.FocusEvent) => handleFocus(e)),
+          onBlur  := ((e: dom.FocusEvent) => handleBlur(e)),
+          if (props.onKeyDown.isDefined) onKeyDown := props.onKeyDown.get else null,
+          if (props.onKeyUp.isDefined) onKeyUp     := props.onKeyUp.get else null,
+
+          // Apply accessibility attributes
+          if (props.ariaLabel.isDefined) aria_label                            := props.ariaLabel.get else null,
+          if (getAriaDescribedBy.isDefined) aria_describedby                   := getAriaDescribedBy.get else null,
+          if (props.ariaInvalid.getOrElse(props.error.isDefined)) aria_invalid := "true" else null,
+
+          // Apply padding style if needed
+          if (getPaddingStyle.nonEmpty) style := getPaddingStyle else null,
         )
       },
 
