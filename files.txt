@@ -50,6 +50,7 @@ tailwind.css
 
 # docs
 ./
+guide.md
 README.md
 ./docs
 _config.yml
