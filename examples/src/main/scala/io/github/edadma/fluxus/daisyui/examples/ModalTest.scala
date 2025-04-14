@@ -265,7 +265,7 @@ def ModalTest: FluxusNode = {
             isOpen = isConfirmModalOpen,
             onConfirm = () => {
               // Handle confirmation
-              console.log("Action confirmed!")
+              println("Action confirmed!")
             },
             onClose = () => setConfirmModalOpen(false),
           ),
@@ -275,7 +275,7 @@ def ModalTest: FluxusNode = {
             isOpen = isDeleteModalOpen,
             onConfirm = () => {
               // Handle deletion
-              console.log("Item deleted!")
+              println("Item deleted!")
             },
             onClose = () => setDeleteModalOpen(false),
           ),
@@ -314,7 +314,7 @@ def ModalTest: FluxusNode = {
                   variant = "primary",
                   onClick = () => {
                     // Handle form submission
-                    console.log(s"Form submitted with name: $formName, email: $formEmail")
+                    println(s"Form submitted with name: $formName, email: $formEmail")
                     setFormModalOpen(false)
                   },
                 ),
