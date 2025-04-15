@@ -210,39 +210,58 @@ def ToastTest: FluxusNode = {
             h3(cls := "text-lg font-medium mb-2", "With Actions"),
             div(
               cls := "flex flex-wrap gap-2",
+              // Updated "With Action Buttons" example for better fitting in fixed-width notifications
+
               Button <> ButtonProps(
                 text = "With Action Buttons",
                 variant = "primary",
-                onClick = () =>
-                  notification.info(
+                onClick = () => {
+                  // Store the notification ID so we can close just this one
+                  var notificationId = ""
+
+                  notificationId = notification.info(
                     "A new version is available for download.",
                     ToastOptions(
                       title = Some("Update Available"),
                       duration = Some(0), // Stay until user interacts
                       actions = Some(
                         div(
-                          cls := "flex gap-2",
+                          // Use flex-col for vertical stacking of buttons for narrower notifications
+                          cls := "flex flex-col gap-2 mt-2",
                           Button <> ButtonProps(
                             text = "Update",
                             variant = "primary",
-                            size = "sm",
+                            size = "xs",          // Use smaller buttons
+                            className = "w-full", // Full width button
                             onClick = () => {
-                              // Simulate update process
-                              notification.success("Update started")
-                              // Close all existing notifications
-//                              notification.closeAll()
+                              // Close only this notification
+                              notification.close(notificationId)
+
+                              // Show success notification after a brief delay
+                              // to ensure proper ordering
+                              setTimeout(100) {
+                                notification.success(
+                                  "Update started successfully",
+                                  ToastOptions(
+                                    title = Some("Updating"),
+                                    duration = Some(3000),
+                                  ),
+                                )
+                              }
                             },
                           ),
                           Button <> ButtonProps(
                             text = "Later",
                             variant = "ghost",
-                            size = "sm",
-                            onClick = () => notification.closeAll(),
+                            size = "xs",                                       // Use smaller buttons
+                            className = "w-full",                              // Full width button
+                            onClick = () => notification.close(notificationId), // Close only this notification
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  )
+                },
               ),
             ),
           ),

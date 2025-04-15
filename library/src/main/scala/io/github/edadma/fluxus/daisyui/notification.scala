@@ -220,31 +220,31 @@ object notification {
           // Render each toast in this position
           positionToasts.toList.sortBy(_._2.timestamp).map { case (id, toast) =>
             // Individual toast
+            // Individual toast
             div(
               key := id,
-              cls := "pointer-events-auto mb-2 w-96", // Enable interactions for the toast itself
+              cls := "pointer-events-auto mb-2 w-[410px]", // Updated to w-[410px]
 
               // Alert component inside the toast
               div(
-                cls := s"${alertClass(toast.variant)} break-words",
+                cls := s"${alertClass(toast.variant)} break-words flex justify-between", // Add justify-between
 
                 // Content
                 div(
-                  cls := "flex-1",
+                  cls := "flex-1", // This will take available space, pushing button to the right
                   toast.title.map(title => div(cls := "font-bold", title)).orNull,
                   toast.message.map(message => div(message)).orNull,
                   toast.children.orNull,
+
+                  // Actions (moved inside content div)
+                  toast.actions.map(actions => div(cls := "mt-2", actions)).orNull,
                 ),
 
-                // Actions or close button
-                div(
-                  cls := "flex-none flex items-center gap-2",
-                  toast.actions.orNull,
-                  button(
-                    cls     := "btn btn-sm btn-ghost",
-                    onClick := (() => close(id)),
-                    "✕",
-                  ),
+                // Close button - now properly right-aligned
+                button(
+                  cls     := "btn btn-sm btn-ghost self-start ml-2", // self-start aligns at top, ml-2 adds spacing
+                  onClick := (() => close(id)),
+                  "✕",
                 ),
               ),
             )
