@@ -15,6 +15,7 @@ SimpleComponentTest.scala
 SpinnerTest.scala
 TableTest.scala
 TabsTest.scala
+ToastTest.scala
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
@@ -27,6 +28,7 @@ Container.scala
 Input.scala
 Label.scala
 Modal.scala
+notification.scala
 Select.scala
 Sidebar.scala
 Spinner.scala
