@@ -24,6 +24,7 @@ This document provides comprehensive documentation for all components in the flu
     - [Tabs](#tabs)
 - [Feedback Components](#feedback-components)
     - [Alert](#alert)
+    - [Modal](#modal)
     - [Spinner](#spinner)
 
 ## Layout Components
@@ -1386,6 +1387,235 @@ Alert <> AlertProps(
 - **Compact Style**: Use `compact={true}` for alerts with less padding in dense UIs
 - **Flexible Content**: Use either the `title`/`message` props for simple alerts or `children` for custom content
 - **Dismissible Alerts**: Provide an `onClose` handler to make the alert dismissible with a close button
+
+### Modal
+
+A flexible dialog component for displaying content that requires user attention or interaction.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `Option[String]` | `None` | Modal title text |
+| `children` | `FluxusNode` | _required_ | Modal content |
+| `footer` | `Option[FluxusNode]` | `None` | Modal footer content (typically action buttons) |
+| `isOpen` | `Boolean` | `false` | Whether the modal is visible |
+| `onClose` | `() => Unit` | `() => ()` | Handler called when modal is closed |
+| `size` | `String` | `"md"` | Modal size: xs, sm, md, lg, xl |
+| `position` | `String` | `"middle"` | Modal position: middle, top, bottom |
+| `responsive` | `Boolean` | `true` | Enable responsive behavior |
+| `backdrop` | `Boolean` | `true` | Show backdrop overlay |
+| `backdropClose` | `Boolean` | `true` | Close when backdrop is clicked |
+| `closeOnEscKey` | `Boolean` | `true` | Close on Escape key press |
+| `animation` | `Boolean` | `true` | Enable animation effects |
+| `closeButton` | `Boolean` | `true` | Show close button in top-right corner |
+| `className` | `String` | `""` | Additional CSS classes for modal |
+| `headerClassName` | `String` | `""` | Additional CSS classes for header |
+| `bodyClassName` | `String` | `""` | Additional CSS classes for body |
+| `footerClassName` | `String` | `""` | Additional CSS classes for footer |
+| `ariaLabelledby` | `Option[String]` | `None` | ID of element that labels the modal |
+| `ariaDescribedby` | `Option[String]` | `None` | ID of element that describes the modal |
+
+#### Examples
+
+##### Basic Modal
+
+```scala
+val (isOpen, setIsOpen, _) = useState(false)
+
+// Trigger button
+Button <> ButtonProps(
+  text = "Open Modal",
+  onClick = () => setIsOpen(true)
+)
+
+// Modal component
+Modal <> ModalProps(
+  isOpen = isOpen,
+  onClose = () => setIsOpen(false),
+  title = Some("Basic Modal"),
+  footer = Some(
+    div(
+      cls := "flex justify-end",
+      Button <> ButtonProps(
+        text = "Close",
+        onClick = () => setIsOpen(false)
+      )
+    )
+  ),
+  children = div(
+    p("This is a basic modal with a title, content, and footer."),
+    p("Click the close button, the X in the corner, or outside the modal to close it.")
+  )
+)
+```
+
+##### Different Sizes and Positions
+
+```scala
+// Small modal
+Modal <> ModalProps(
+  isOpen = isSmallModalOpen,
+  onClose = () => setSmallModalOpen(false),
+  title = Some("Small Modal"),
+  size = "sm",
+  children = p("This is a small modal with compact width.")
+)
+
+// Top positioned modal
+Modal <> ModalProps(
+  isOpen = isTopModalOpen,
+  onClose = () => setTopModalOpen(false),
+  title = Some("Top Modal"),
+  position = "top",
+  children = p("This modal appears at the top of the screen.")
+)
+
+// Bottom positioned modal
+Modal <> ModalProps(
+  isOpen = isBottomModalOpen,
+  onClose = () => setBottomModalOpen(false),
+  title = Some("Bottom Modal"),
+  position = "bottom",
+  children = p("This modal appears at the bottom of the screen.")
+)
+```
+
+##### Form Modal
+
+```scala
+Modal <> ModalProps(
+  isOpen = isFormModalOpen,
+  onClose = () => setFormModalOpen(false),
+  title = Some("Contact Form"),
+  footer = Some(
+    div(
+      cls := "flex justify-end gap-2",
+      Button <> ButtonProps(
+        text = "Cancel",
+        variant = "ghost",
+        onClick = () => setFormModalOpen(false)
+      ),
+      Button <> ButtonProps(
+        text = "Submit",
+        variant = "primary",
+        onClick = () => {
+          // Handle form submission
+          setFormModalOpen(false)
+        }
+      )
+    )
+  ),
+  children = div(
+    cls := "space-y-4",
+    // Form fields
+    div(
+      cls := "form-control",
+      label(cls := "label", span(cls := "label-text", "Name")),
+      Input <> InputProps(
+        value = Some(formName),
+        onChange = setFormName,
+        placeholder = Some("Enter your name")
+      )
+    ),
+    div(
+      cls := "form-control",
+      label(cls := "label", span(cls := "label-text", "Email")),
+      Input <> InputProps(
+        typ = "email",
+        value = Some(formEmail),
+        onChange = setFormEmail,
+        placeholder = Some("Enter your email")
+      )
+    )
+  )
+)
+```
+
+#### Modal Presets
+
+Fluxus-DaisyUI includes several pre-built modal variants for common use cases:
+
+##### Info Modal
+
+```scala
+ModalPresets.info(
+  title = "Information",
+  content = "This is some important information you should know about.",
+  isOpen = isInfoModalOpen,
+  onClose = () => setInfoModalOpen(false)
+)
+```
+
+##### Success Modal
+
+```scala
+ModalPresets.success(
+  title = "Success!",
+  content = "Your action was completed successfully.",
+  isOpen = isSuccessModalOpen,
+  onClose = () => setSuccessModalOpen(false)
+)
+```
+
+##### Warning Modal
+
+```scala
+ModalPresets.warning(
+  title = "Warning",
+  content = "This action might have unexpected consequences.",
+  isOpen = isWarningModalOpen,
+  onClose = () => setWarningModalOpen(false)
+)
+```
+
+##### Error Modal
+
+```scala
+ModalPresets.error(
+  title = "Error",
+  content = "Something went wrong. Please try again.",
+  isOpen = isErrorModalOpen,
+  onClose = () => setErrorModalOpen(false)
+)
+```
+
+##### Confirmation Dialog
+
+```scala
+ModalPresets.confirm(
+  title = "Confirm Action",
+  content = "Are you sure you want to proceed with this action?",
+  isOpen = isConfirmModalOpen,
+  onConfirm = () => {
+    // Handle confirmation
+    console.log("Action confirmed!")
+  },
+  onClose = () => setConfirmModalOpen(false)
+)
+```
+
+##### Delete Confirmation Dialog
+
+```scala
+ModalPresets.delete(
+  isOpen = isDeleteModalOpen,
+  onConfirm = () => {
+    // Handle deletion
+    console.log("Item deleted!")
+  },
+  onClose = () => setDeleteModalOpen(false)
+)
+```
+
+#### Usage Tips
+
+- **Modal State Management**: Use the `isOpen` prop to control visibility and `onClose` handler for closing the modal
+- **Accessibility**: Modals trap focus when open and support keyboard navigation (Escape to close)
+- **Composition**: Use the `footer` prop for action buttons and the `title` prop for consistent header styling
+- **Responsiveness**: Modals automatically adapt to screen size but can be configured with different sizes
+- **Presets**: Use the `ModalPresets` utility for common dialog types (confirmation, error, etc.)
+- **Customization**: Use the `className` props to add custom styling to different parts of the modal
 
 ### Spinner
 
