@@ -46,7 +46,7 @@ case class ModalProps(
   *   - Keyboard support (escape to close)
   *   - Accessibility attributes
   */
-val Modal = (props: ModalProps) => {
+val Modal: ModalProps => FluxusNode = (props: ModalProps) => {
   // Trap focus within modal when open
   val modalRef = useRef[dom.html.Div]()
 
@@ -184,7 +184,7 @@ val Modal = (props: ModalProps) => {
             cls := s"font-bold text-lg ${props.headerClassName}",
             title,
           ),
-        ).getOrElse(null),
+        ).orNull,
 
         // Modal body
         div(
@@ -198,7 +198,7 @@ val Modal = (props: ModalProps) => {
             cls := s"modal-action ${props.footerClassName}",
             footer,
           ),
-        ).getOrElse(null),
+        ).orNull,
       ),
     )
   }
@@ -215,7 +215,7 @@ case class ConfirmModalProps(
     onCancel: () => Unit = () => (),
     confirmText: String = "Confirm",
     cancelText: String = "Cancel",
-    confirmButtonProps: ButtonProps = ButtonProps(variant = "primary"),
+    confirmButtonProps: ButtonProps = ButtonProps(),
     cancelButtonProps: ButtonProps = ButtonProps(variant = "ghost"),
     icon: FluxusNode = null,
     variant: String = "info", // info, success, warning, error
@@ -330,7 +330,7 @@ case class AlertModalProps(
     isOpen: Boolean,
     onClose: () => Unit,
     buttonText: String = "OK",
-    buttonProps: ButtonProps = ButtonProps(variant = "primary"),
+    buttonProps: ButtonProps = ButtonProps(),
     icon: FluxusNode = null,
     variant: String = "info", // info, success, warning, error
 )
@@ -441,7 +441,6 @@ object ModalPresets {
       onClose = onClose,
       buttonText = buttonText,
       buttonProps = ButtonProps(variant = "info"),
-      variant = "info",
     )
   }
 
