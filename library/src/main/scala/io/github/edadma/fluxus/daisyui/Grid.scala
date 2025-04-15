@@ -6,8 +6,8 @@ import org.scalajs.dom
 /** Grid component props with comprehensive Tailwind CSS grid styling options
   */
 case class GridProps(
-    // Core content
-    children: FluxusNode,
+    // Core content - now accepts a sequence of nodes
+    children: Seq[FluxusNode],
 
     // Grid columns - must use full Tailwind classes
     columns: String = "grid-cols-1",  // Tailwind grid-cols-* classes (grid-cols-1, grid-cols-2, etc.)
@@ -144,16 +144,16 @@ val Grid = (props: GridProps) => {
   } else {
     // Use standard Tailwind classes
     if (props.columns.nonEmpty) classes += props.columns
-    props.mdColumns.foreach(cls => classes += cls) // Already full Tailwind class
-    props.lgColumns.foreach(cls => classes += cls) // Already full Tailwind class
-    props.xlColumns.foreach(cls => classes += cls) // Already full Tailwind class
+    props.mdColumns.foreach(cls => classes += cls)
+    props.lgColumns.foreach(cls => classes += cls)
+    props.xlColumns.foreach(cls => classes += cls)
   }
 
   // Grid rows
   if (props.rows.nonEmpty) classes += props.rows
-  props.mdRows.foreach(cls => classes += cls) // Already full Tailwind class
-  props.lgRows.foreach(cls => classes += cls) // Already full Tailwind class
-  props.xlRows.foreach(cls => classes += cls) // Already full Tailwind class
+  props.mdRows.foreach(cls => classes += cls)
+  props.lgRows.foreach(cls => classes += cls)
+  props.xlRows.foreach(cls => classes += cls)
 
   // Grid gaps
   if (props.gap.nonEmpty) classes += props.gap
@@ -202,27 +202,15 @@ val Grid = (props: GridProps) => {
     ""
   }
 
-  // Handle click events on grid items
-  def handleItemClick(e: dom.Event, key: Option[String]): Unit = {
-    props.onItemClick.foreach(_(e, key))
-  }
-
   // Apply staggered animation to children if needed
-  def processChildren: FluxusNode = {
+  def processChildren: Seq[FluxusNode] = {
     if (props.staggered && props.animate.nonEmpty) {
-      // Calculate delay for each child
-      val childNodes = props.children match {
-        case elemNode: ElementNode => elemNode.children
-        case _                     => Seq.empty
-      }
-
       var counter = 0
-      val childrenWithDelay = childNodes.map { child =>
+      props.children.map { child =>
         val delay = counter * 100 // 100ms stagger
         counter += 1
 
-        // For animation delays, we need to use predefined Tailwind classes
-        // This is a safer approach that ensures all classes are statically analyzable
+        // For animation delays, use predefined Tailwind classes
         val delayClass = delay match {
           case 0    => "delay-0"
           case 100  => "delay-100"
@@ -235,7 +223,7 @@ val Grid = (props: GridProps) => {
           case 800  => "delay-800"
           case 900  => "delay-900"
           case 1000 => "delay-1000"
-          case _    => "delay-0" // Default to no delay for unsupported values
+          case _    => "delay-0" // Default for unsupported values
         }
 
         child match {
@@ -247,24 +235,21 @@ val Grid = (props: GridProps) => {
             )
 
             GridItem <> newProps
-            x
+
           case other => other // Return unmodified if not a GridItem
         }
       }
-
-      // Return the processed children
-      if (childrenWithDelay.isEmpty) props.children else div(childrenWithDelay*)
     } else {
       // Return children unmodified
       props.children
     }
   }
 
-  // Render the grid component
+  // Render the grid component with processed children
   div(
     cls := gridClass,
     if (gridStyle.nonEmpty) style := gridStyle else null,
-    processChildren,
+    processChildren, // Spread the children into the grid container
   )
 }
 
@@ -368,12 +353,12 @@ val GridItem = (props: GridItemProps) => {
   )
 }
 
-/** GridArea component for named grid template areas
+/** GridArea component props for named grid template areas
   */
 case class GridAreaProps(
     // Core properties
-    name: String,         // Grid area name
-    children: FluxusNode, // Content to render in this area
+    name: String,              // Grid area name
+    children: Seq[FluxusNode], // Content to render in this area
 
     // Styling - must use full Tailwind classes
     bgClass: Option[String] = None, // Background color (bg-base-100, bg-primary, etc.)
@@ -413,56 +398,11 @@ val GridArea = (props: GridAreaProps) => {
   )
 }
 
-/** AutoGrid component for simple, responsive grids
-  *
-  * A convenience component that sets up a basic responsive grid
-  */
-case class AutoGridProps(
-    // Core content
-    children: FluxusNode,
-
-    // Grid configuration
-    itemWidth: String = "250px", // Minimum width for items
-    gap: String = "gap-4",       // Gap between items (full Tailwind class)
-
-    // Styling
-    padding: String = "p-4",     // Padding around the grid (full Tailwind class)
-    bordered: Boolean = false,   // Add border around the grid
-    rounded: Boolean = false,    // Add rounded corners
-    bgClass: String = "",        // Background class (full Tailwind class)
-    equalHeight: Boolean = true, // Force equal height rows
-
-    // Additional styling
-    className: String = "",
-)
-
-/** AutoGrid component for simple responsive grids
-  *
-  * A simplified grid component that automatically creates a responsive grid where items take up equal space and wrap as
-  * needed.
-  */
-val AutoGrid = (props: AutoGridProps) => {
-  Grid <> GridProps(
-    autoFit = true,
-    minItemWidth = props.itemWidth,
-    gap = props.gap,
-    padding = props.padding,
-    bordered = props.bordered,
-    rounded = props.rounded,
-    bgClass = props.bgClass,
-    equalHeight = props.equalHeight,
-    className = props.className,
-    children = props.children,
-  )
-}
-
 /** Dashboard grid with named template areas
-  *
-  * Creates a grid with named areas for dashboard layouts
   */
 case class DashboardGridProps(
     // Core content - should be GridArea components
-    children: FluxusNode,
+    children: Seq[FluxusNode],
 
     // Template definition
     areas: List[String], // Grid template areas (rows of column names)
@@ -481,8 +421,6 @@ case class DashboardGridProps(
 )
 
 /** DashboardGrid component for dashboard layouts with named areas
-  *
-  * Uses grid-template-areas for layout, allowing easy repositioning of dashboard components.
   */
 val DashboardGrid = (props: DashboardGridProps) => {
   // Process template areas into CSS grid-template-areas
@@ -535,5 +473,43 @@ val DashboardGrid = (props: DashboardGridProps) => {
     cls   := gridClass,
     style := gridStyle.toString(),
     props.children,
+  )
+}
+
+/** AutoGrid component for simple, responsive grids
+  */
+case class AutoGridProps(
+    // Core content
+    children: Seq[FluxusNode],
+
+    // Grid configuration
+    itemWidth: String = "250px", // Minimum width for items
+    gap: String = "gap-4",       // Gap between items (full Tailwind class)
+
+    // Styling
+    padding: String = "p-4",     // Padding around the grid (full Tailwind class)
+    bordered: Boolean = false,   // Add border around the grid
+    rounded: Boolean = false,    // Add rounded corners
+    bgClass: String = "",        // Background class (full Tailwind class)
+    equalHeight: Boolean = true, // Force equal height rows
+
+    // Additional styling
+    className: String = "",
+)
+
+/** AutoGrid component for simple responsive grids
+  */
+val AutoGrid = (props: AutoGridProps) => {
+  Grid <> GridProps(
+    autoFit = true,
+    minItemWidth = props.itemWidth,
+    gap = props.gap,
+    padding = props.padding,
+    bordered = props.bordered,
+    rounded = props.rounded,
+    bgClass = props.bgClass,
+    equalHeight = props.equalHeight,
+    className = props.className,
+    children = props.children,
   )
 }

@@ -34,7 +34,7 @@ def GridTest: FluxusNode = {
             mdColumns = Some("md:grid-cols-2"),
             lgColumns = Some("lg:grid-cols-3"),
             gap = "gap-4",
-            children = div(
+            children = Seq(div(
               GridItem <> GridItemProps(
                 bordered = true,
                 rounded = true,
@@ -65,7 +65,7 @@ def GridTest: FluxusNode = {
                   p("This is the third grid item."),
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -83,7 +83,7 @@ def GridTest: FluxusNode = {
             autoFit = true,
             minItemWidth = "200px",
             gap = "gap-4",
-            children = div(
+            children = Seq(div(
               (1 to 6).map(i =>
                 GridItem <> GridItemProps(
                   key = Some(s"item-$i"),
@@ -97,7 +97,7 @@ def GridTest: FluxusNode = {
                   ),
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -114,7 +114,7 @@ def GridTest: FluxusNode = {
           Grid <> GridProps(
             columns = "grid-cols-6",
             gap = "gap-4",
-            children = div(
+            children = Seq(div(
               GridItem <> GridItemProps(
                 colSpan = Some("col-span-6"),
                 bordered = true,
@@ -180,7 +180,7 @@ def GridTest: FluxusNode = {
                   p("This spans 2 columns."),
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -212,7 +212,7 @@ def GridTest: FluxusNode = {
             columns = "grid-cols-2",
             mdColumns = Some("md:grid-cols-3"),
             gap = "gap-4",
-            children = div(
+            children = Seq(div(
               (1 to 6).map(i =>
                 GridItem <> GridItemProps(
                   key = Some(s"interactive-$i"),
@@ -230,7 +230,7 @@ def GridTest: FluxusNode = {
                   ),
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -248,7 +248,7 @@ def GridTest: FluxusNode = {
             masonry = true,
             masonryColumns = "columns-1 md:columns-2 lg:columns-3",
             gap = "gap-4",
-            children = div(
+            children = Seq(div(
               (1 to 10).map { i =>
                 val randomHeight = (100 + (i * 30) % 200)
 
@@ -273,7 +273,7 @@ def GridTest: FluxusNode = {
                   ),
                 )
               },
-            ),
+            )),
           ),
         ),
       ),
@@ -293,7 +293,7 @@ def GridTest: FluxusNode = {
             gap = "gap-4",
             animate = "animate-in fade-in",
             staggered = true,
-            children = div(
+            children = Seq(div(
               (1 to 6).map(i =>
                 GridItem <> GridItemProps(
                   key = Some(s"animated-$i"),
@@ -310,7 +310,7 @@ def GridTest: FluxusNode = {
                   ),
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -349,17 +349,17 @@ def GridTest: FluxusNode = {
             rounded = true,
             bgClass = "bg-base-200",
             className = "min-h-[500px]",
-            children = div(
+            children = Seq(div(
               GridArea <> GridAreaProps(
                 name = "header",
                 bgClass = Some("bg-primary text-primary-content"),
                 bordered = true,
                 rounded = true,
                 padding = Some("p-4"),
-                children = div(
+                children = Seq(div(
                   h2(cls := "text-xl font-bold", "Dashboard Header"),
                   p("This is the header area."),
-                ),
+                )),
               ),
               GridArea <> GridAreaProps(
                 name = "sidebar",
@@ -367,7 +367,7 @@ def GridTest: FluxusNode = {
                 bordered = true,
                 rounded = true,
                 padding = Some("p-4"),
-                children = div(
+                children = Seq(div(
                   h3(cls := "text-lg font-bold", "Sidebar"),
                   ul(
                     cls := "menu",
@@ -376,7 +376,7 @@ def GridTest: FluxusNode = {
                     li(a("Reports")),
                     li(a("Settings")),
                   ),
-                ),
+                )),
               ),
               GridArea <> GridAreaProps(
                 name = "main",
@@ -384,7 +384,7 @@ def GridTest: FluxusNode = {
                 bordered = true,
                 rounded = true,
                 padding = Some("p-4"),
-                children = div(
+                children = Seq(div(
                   h3(cls := "text-lg font-bold", "Main Content"),
                   p("This is the main content area of the dashboard."),
                   p(
@@ -395,7 +395,7 @@ def GridTest: FluxusNode = {
                     cls := "mt-2",
                     "The layout will change on different screen sizes without needing to change the markup.",
                   ),
-                ),
+                )),
               ),
               GridArea <> GridAreaProps(
                 name = "footer",
@@ -403,11 +403,11 @@ def GridTest: FluxusNode = {
                 bordered = true,
                 rounded = true,
                 padding = Some("p-4"),
-                children = div(
+                children = Seq(div(
                   p(cls := "text-center", "Dashboard Footer © 2024"),
-                ),
+                )),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -428,7 +428,7 @@ def GridTest: FluxusNode = {
             bordered = true,
             rounded = true,
             bgClass = "bg-base-200",
-            children = div(
+            children =
               (1 to 8).map(i =>
                 div(
                   key := s"auto-$i",
@@ -437,7 +437,6 @@ def GridTest: FluxusNode = {
                   p("Simple card in an auto-grid layout."),
                 ),
               ),
-            ),
           ),
         ),
       ),
@@ -460,7 +459,7 @@ def GridTest: FluxusNode = {
             bordered3d = true,
             rounded = true,
             bgClass = "bg-base-200",
-            children = div(
+            children =
               (1 to 6).map(i =>
                 GridItem <> GridItemProps(
                   key = Some(s"3d-$i"),
@@ -485,7 +484,6 @@ def GridTest: FluxusNode = {
                   ),
                 ),
               ),
-            ),
           ),
         ),
       ),
@@ -506,7 +504,7 @@ def GridTest: FluxusNode = {
             bordered = true,
             rounded = true,
             debug = true,
-            children = div(
+            children = Seq(div(
               (1 to 12).map(i =>
                 div(
                   key := s"debug-$i",
@@ -514,7 +512,7 @@ def GridTest: FluxusNode = {
                   s"Cell $i",
                 ),
               ),
-            ),
+            )),
           ),
         ),
       ),
