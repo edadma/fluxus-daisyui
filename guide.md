@@ -6,6 +6,7 @@ This document provides comprehensive documentation for all components in the flu
 
 - [Layout Components](#layout-components)
     - [Container](#container)
+    - [Grid](#grid)
 - [Input Components](#input-components)
     - [Button](#button)
     - [Input](#input)
@@ -25,7 +26,7 @@ This document provides comprehensive documentation for all components in the flu
 - [Feedback Components](#feedback-components)
     - [Alert](#alert)
     - [Modal](#modal)
-    - [Notification System](#notification_system)
+    - [Notification System](#notification-system)
     - [Spinner](#spinner)
 
 ## Layout Components
@@ -55,6 +56,111 @@ Container <> ContainerProps(
   )
 )
 ```
+
+### Grid
+
+The `Grid` component provides a responsive, flexible grid layout powered by Tailwind CSS. It supports advanced features like auto-fit, masonry layouts, animations, debug overlays, and item alignment.
+
+#### Props
+
+All props map to Tailwind class names and layout features.
+
+- `children: Seq[FluxusNode]` — grid items.
+- `columns: String` — default column class (e.g., `"grid-cols-1"`).
+- `mdColumns / lgColumns / xlColumns: Option[String]` — responsive column classes.
+- `rows: String` — row configuration (e.g., `"grid-rows-3"`).
+- `mdRows / lgRows / xlRows: Option[String]` — responsive row configurations.
+- `gap: String` — overall gap class (e.g., `"gap-4"`).
+- `colGap / rowGap: Option[String]` — independent horizontal and vertical gap classes.
+- `autoFlow: String` — grid flow class (e.g., `"grid-flow-row"`).
+- `justifyItems / alignItems / justifyContent / alignContent: String` — alignment classes.
+- `autoFit / autoFill: Boolean` — enable responsive column layout using CSS `minmax(...)`.
+- `minItemWidth: String` — used with `autoFit`/`autoFill` (e.g., `"200px"`).
+- `equalHeight: Boolean` — forces uniform row heights.
+- `masonry: Boolean` — enables column-based masonry layout.
+- `masonryColumns: String` — Tailwind column classes (e.g., `"columns-1 md:columns-2"`).
+- `bordered / rounded: Boolean` — adds border and/or rounded corners.
+- `bordered3d: Boolean` — adds a 3D border style.
+- `padding: String` — Tailwind padding classes.
+- `bgClass: String` — Tailwind background classes.
+- `animate: String` — animation classes (e.g., `"animate-in fade-in"`).
+- `staggered: Boolean` — applies staggered delay animation to `GridItem`s.
+- `debug: Boolean` — enables grid debugging UI (visible cell outlines, etc.).
+- `className: String` — additional custom classes.
+- `onItemClick: Option[(dom.Event, Option[String]) => Unit]` — optional click handler.
+
+When `autoFit` or `autoFill` is true, an inline `grid-template-columns: repeat(auto-fit|auto-fill, minmax(...))` is used.
+
+When `masonry` is true, the grid becomes a column layout with `break-inside-avoid` applied to children.
+
+---
+
+### GridItem
+
+`GridItem` is a styled child of `Grid`. It supports responsive spans, alignment, animations, and interaction.
+
+#### Props
+
+- `children: FluxusNode` — content.
+- `colSpan / rowSpan / colStart / colEnd / rowStart / rowEnd: Option[String]` — grid positioning.
+- `mdColSpan / lgColSpan / xlColSpan: Option[String]` — responsive span overrides.
+- `justifySelf / alignSelf: Option[String]` — self-alignment classes.
+- `bgClass / shadow / padding / margin: Option[String]` — Tailwind styling.
+- `bordered / rounded / glass: Boolean` — extra visuals.
+- `hoverElevate / hoverHighlight: Boolean` — predefined hover effects.
+- `animate / animateDelay: Option[String]` — Tailwind animation classes.
+- `interactive: Boolean` — enables pointer and scale interaction.
+- `key: Option[String]` — used for tracking animation and interaction.
+- `onClick: Option[dom.Event => Unit]` — click handler.
+- `disabled: Boolean` — disables interactivity.
+- `className: String` — additional classes.
+
+---
+
+### AutoGrid
+
+A simplified wrapper around `Grid` for quick layouts with auto-fit behavior.
+
+#### Props (AutoGridProps)
+
+- `children: Seq[FluxusNode]` — content.
+- `itemWidth: String` — value for `minItemWidth` (e.g., `"250px"`).
+- `gap / padding / bgClass: String` — layout and styling classes.
+- `bordered / rounded / equalHeight: Boolean` — layout features.
+- `className: String` — additional styling.
+
+Internally, `AutoGrid` maps directly to `Grid` with `autoFit = true`.
+
+---
+
+### DashboardGrid
+
+A grid container that uses named CSS `grid-template-areas` for dashboards.
+
+#### Props (DashboardGridProps)
+
+- `children: Seq[FluxusNode]` — must include `GridArea` children with matching names.
+- `areas: List[String]` — row-wise strings of space-separated area names (e.g., `"header header header"`).
+- `mdAreas / lgAreas: Option[List[String]]` — responsive versions.
+- `gap / padding / bgClass: String` — layout and style.
+- `bordered / rounded: Boolean` — enable visual styling.
+- `className: String` — additional custom classes.
+
+---
+
+### GridArea
+
+Defines a named region inside a `DashboardGrid`.
+
+#### Props (GridAreaProps)
+
+- `name: String` — matches a template area in the parent `DashboardGrid`.
+- `children: Seq[FluxusNode]` — content.
+- `bgClass / padding / margin / shadow: Option[String]` — styling.
+- `bordered / rounded / glass: Boolean` — visual styling.
+- `className: String` — custom classes.
+
+A `GridArea` is positioned by setting `style := s"grid-area: $name"` and inherits styling like a `GridItem`.
 
 ---
 
