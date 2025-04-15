@@ -25,6 +25,7 @@ This document provides comprehensive documentation for all components in the flu
 - [Feedback Components](#feedback-components)
     - [Alert](#alert)
     - [Modal](#modal)
+    - [Notification System](#notification_system)
     - [Spinner](#spinner)
 
 ## Layout Components
@@ -1616,6 +1617,208 @@ ModalPresets.delete(
 - **Responsiveness**: Modals automatically adapt to screen size but can be configured with different sizes
 - **Presets**: Use the `ModalPresets` utility for common dialog types (confirmation, error, etc.)
 - **Customization**: Use the `className` props to add custom styling to different parts of the modal
+
+### Notification System
+
+A global notification/toast system that allows you to display temporary informational messages anywhere in your application.
+
+#### API Overview
+
+The `notification` object provides a set of methods to show different types of notifications:
+
+| Method | Description |
+|--------|-------------|
+| `notification.success(message, options)` | Shows a success notification |
+| `notification.error(message, options)` | Shows an error notification |
+| `notification.info(message, options)` | Shows an info notification |
+| `notification.warning(message, options)` | Shows a warning notification |
+| `notification.neutral(message, options)` | Shows a neutral notification |
+| `notification.show(...)` | Core method with all configuration options |
+| `notification.close(id)` | Closes a specific notification by ID |
+| `notification.closeAll()` | Closes all active notifications |
+
+#### ToastOptions
+
+The configuration options for notifications:
+
+```scala
+case class ToastOptions(
+    title: Option[String] = None,               // Optional title
+    duration: Option[Int] = None,               // Duration in milliseconds before auto-dismiss
+    position: Option[String] = None,            // Position on screen
+    actions: Option[FluxusNode] = None,         // Action buttons to display
+    onClose: Option[() => Unit] = None,         // Callback when notification closes
+)
+```
+
+#### Basic Usage
+
+```scala
+// Simple success notification
+notification.success("Operation completed successfully!")
+
+// Error notification with title
+notification.error(
+  "Failed to save changes to the document",
+  ToastOptions(title = Some("Save Failed"))
+)
+
+// Info notification with custom duration
+notification.info(
+  "This notification will stay longer",
+  ToastOptions(duration = Some(8000)) // 8 seconds
+)
+
+// Warning notification with custom position
+notification.warning(
+  "Please check your input values",
+  ToastOptions(position = Some("bottom-end"))
+)
+```
+
+#### Positions
+
+The notification system supports different positions on screen:
+
+- `"top-start"` - Top left
+- `"top-center"` - Top center
+- `"top-end"` - Top right (default)
+- `"middle"` - Center of screen
+- `"bottom-start"` - Bottom left
+- `"bottom-center"` - Bottom center
+- `"bottom-end"` - Bottom right
+
+```scala
+// Show notification at the top-center
+notification.info(
+  "New updates available",
+  ToastOptions(position = Some("top-center"))
+)
+
+// Show notification at the bottom-center
+notification.success(
+  "Your changes have been saved",
+  ToastOptions(position = Some("bottom-center"))
+)
+```
+
+#### Duration
+
+Control how long notifications stay visible:
+
+```scala
+// Short notification (2 seconds)
+notification.info(
+  "This notification will disappear quickly",
+  ToastOptions(duration = Some(2000))
+)
+
+// Long notification (10 seconds)
+notification.info(
+  "This notification will stay longer",
+  ToastOptions(duration = Some(10000))
+)
+
+// Persistent notification (won't auto-dismiss)
+notification.warning(
+  "This notification won't auto-dismiss. Click the X to close it.",
+  ToastOptions(duration = Some(0))  // 0 means no auto-dismiss
+)
+```
+
+#### Advanced Usage
+
+You can use the core `show` method for more control:
+
+```scala
+// Initialize variable for the notification ID
+var notificationId = ""
+
+// Show a notification with actions that reference its own ID
+notificationId = notification.show(
+  message = Some("A new version is available for download."),
+  title = Some("Update Available"),
+  variant = "info",
+  duration = 0,  // Won't auto-dismiss
+  position = "top-end",
+  actions = Some(
+    div(
+      cls := "flex flex-col gap-2 mt-2",
+      Button <> ButtonProps(
+        text = "Update Now",
+        variant = "primary",
+        size = "xs",
+        className = "w-full",
+        onClick = () => {
+          // Close this notification
+          notification.close(notificationId)
+          
+          // Show success notification
+          notification.success("Update started successfully")
+        }
+      ),
+      Button <> ButtonProps(
+        text = "Later",
+        variant = "ghost",
+        size = "xs",
+        className = "w-full",
+        onClick = () => notification.close(notificationId)
+      )
+    )
+  )
+)
+```
+
+#### Notification Stacking
+
+Notifications automatically stack when multiple are shown:
+
+```scala
+// Show multiple notifications
+Button <> ButtonProps(
+  text = "Show Multiple Notifications",
+  variant = "primary",
+  onClick = () => {
+    // Create 3 notifications
+    notification.info("First notification")
+    notification.success("Second notification")
+    notification.warning("Third notification")
+  }
+)
+```
+
+#### Clearing Notifications
+
+```scala
+// Close all notifications
+Button <> ButtonProps(
+  text = "Clear All Notifications",
+  variant = "error",
+  onClick = () => notification.closeAll()
+)
+```
+
+#### Implementation Notes
+
+- Notifications are automatically rendered into a specially created container in the DOM
+- You don't need to add any container component to your app
+- Notifications use DaisyUI's alert component internally with appropriate styling
+- The notification system uses an internal Var to track active toast notifications
+- Notifications are automatically removed from this state when closed or auto-dismissed
+
+#### Usage Tips
+
+- Use short, concise messages that communicate the essential information
+- Choose the appropriate notification type based on the context:
+  - `success` for successful operations
+  - `error` for failures and errors
+  - `warning` for potential issues or cautions
+  - `info` for neutral information
+- For important messages, use a longer duration or set `duration = 0` to prevent auto-dismissal
+- For interactive notifications, add action buttons with the `actions` property
+- Consider the position based on the importance and context of the notification:
+  - Important alerts often work better at the top of the screen
+  - Less critical information can appear at the bottom
 
 ### Spinner
 
