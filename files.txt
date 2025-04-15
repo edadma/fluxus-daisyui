@@ -8,6 +8,7 @@ BadgeTest.scala
 InputTest.scala
 LabelTest.scala
 main.scala
+ModalTest.scala
 SelectTest.scala
 SidebarTest.scala
 SimpleComponentTest.scala
@@ -25,6 +26,7 @@ Card.scala
 Container.scala
 Input.scala
 Label.scala
+Modal.scala
 Select.scala
 Sidebar.scala
 Spinner.scala
