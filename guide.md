@@ -422,6 +422,168 @@ Button <> ButtonProps(
 )
 ```
 
+### RadioGroup
+
+A component for managing a group of radio buttons with various styling options and layouts.
+
+#### RadioOption Model
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `String` | _required_ | The option value (used internally) |
+| `label` | `String` | _required_ | The display text shown to users |
+| `disabled` | `Boolean` | `false` | Whether the option is disabled |
+
+#### RadioButtonProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `String` | _required_ | Value for this radio button |
+| `name` | `String` | _required_ | Group name (for HTML form submission) |
+| `label` | `Option[String]` | `None` | Optional label text |
+| `checked` | `Boolean` | `false` | Whether this radio is checked |
+| `disabled` | `Boolean` | `false` | Whether this radio is disabled |
+| `variant` | `String` | `""` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `size` | `String` | `"md"` | Size: xs, sm, md, lg |
+| `onChange` | `Option[String => Unit]` | `None` | Change handler for the radio value |
+| `className` | `String` | `""` | Additional CSS classes for the radio input |
+| `labelClassName` | `String` | `""` | Additional CSS classes for the label |
+
+#### RadioGroupProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `String` | _required_ | Group name for all radio buttons |
+| `value` | `Option[String]` | `None` | Currently selected value |
+| `onChange` | `String => Unit` | `_ => ()` | Change handler |
+| `options` | `List[RadioOption]` | `List()` | List of options to display |
+| `variant` | `String` | `""` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `size` | `String` | `"md"` | Size: xs, sm, md, lg |
+| `direction` | `String` | `"vertical"` | Layout direction: vertical, horizontal |
+| `className` | `String` | `""` | Additional CSS classes |
+
+#### Examples
+
+##### Basic Radio Group
+
+```scala
+val (selectedFruit, setSelectedFruit, _) = useState[Option[String]](None)
+
+RadioGroup <> RadioGroupProps(
+  name = "fruit",
+  value = selectedFruit,
+  onChange = (value) => setSelectedFruit(Some(value)),
+  options = List(
+    RadioOption("apple", "Apple"),
+    RadioOption("banana", "Banana"),
+    RadioOption("cherry", "Cherry"),
+    RadioOption("durian", "Durian", disabled = true)
+  )
+)
+
+div(
+  cls := "mt-4 p-2 bg-base-200 rounded",
+  s"Selected fruit: ${selectedFruit.getOrElse("None")}"
+)
+```
+
+##### Color Variants
+
+```scala
+// Primary radio buttons
+RadioGroup <> RadioGroupProps(
+  name = "color",
+  value = selectedColor,
+  onChange = setSelectedColor,
+  options = colorOptions,
+  variant = "primary"
+)
+
+// Success radio buttons
+RadioGroup <> RadioGroupProps(
+  name = "status",
+  value = selectedStatus,
+  onChange = setSelectedStatus,
+  options = statusOptions,
+  variant = "success"
+)
+```
+
+##### Horizontal Layout
+
+```scala
+RadioGroup <> RadioGroupProps(
+  name = "theme",
+  value = selectedTheme,
+  onChange = (value) => setSelectedTheme(Some(value)),
+  options = List(
+    RadioOption("light", "Light"),
+    RadioOption("dark", "Dark"),
+    RadioOption("system", "System")
+  ),
+  direction = "horizontal"
+)
+```
+
+##### Sizes
+
+```scala
+// Small radio buttons
+RadioGroup <> RadioGroupProps(
+  name = "size-demo",
+  value = selectedSize,
+  onChange = setSelectedSize,
+  options = sizeOptions,
+  size = "sm"
+)
+
+// Large radio buttons
+RadioGroup <> RadioGroupProps(
+  name = "size-demo-large",
+  value = selectedSize,
+  onChange = setSelectedSize,
+  options = sizeOptions,
+  size = "lg"
+)
+```
+
+##### Individual Radio Buttons
+
+If you need more control over placement or styling, you can use `RadioButton` directly:
+
+```scala
+div(
+  cls := "space-y-2",
+  RadioButton <> RadioButtonProps(
+    name = "agreement",
+    value = "agree",
+    label = Some("I agree to the terms and conditions"),
+    checked = isAgreed,
+    onChange = Some((_) => setIsAgreed(true)),
+    variant = "primary"
+  ),
+  RadioButton <> RadioButtonProps(
+    name = "agreement",
+    value = "disagree",
+    label = Some("I do not agree"),
+    checked = !isAgreed,
+    onChange = Some((_) => setIsAgreed(false)),
+    variant = "primary"
+  )
+)
+```
+
+#### Usage Tips
+
+- **Form Integration**: Use the same `name` for all radio buttons in a group for proper HTML form submission
+- **Controlled vs Uncontrolled**:
+  - For controlled behavior, provide `value` and `onChange` props
+  - Update the `value` state in your component when `onChange` is called
+- **Horizontal vs Vertical**: Use the `direction` prop to control layout orientation
+- **Validation**: Combine with the `Label` component for form validation messages
+- **Styling**: Use the `variant` prop to match your application's color scheme
+- **Accessibility**: RadioGroup adds proper ARIA roles for improved screen reader support
+
 ### Select
 
 A custom select dropdown component with styling options and clear functionality.
