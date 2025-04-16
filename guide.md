@@ -6,6 +6,7 @@ This document provides comprehensive documentation for all components in the flu
 
 - [Layout Components](#layout-components)
     - [Container](#container)
+    - [Grid](#grid)
 - [Input Components](#input-components)
     - [Button](#button)
     - [Input](#input)
@@ -16,15 +17,17 @@ This document provides comprehensive documentation for all components in the flu
     - [AvatarGroup](#avatargroup)
     - [Badge](#badge)
     - [Card](#card)
+    - [Pagination](#pagination)
     - [Table](#table)
     - [TableWithPagination](#tablewithpagination)
-    - [Pagination](#pagination)
+    - [Tooltip](#tooltip)
 - [Navigation Components](#navigation-components)
     - [Sidebar](#sidebar)
     - [Tabs](#tabs)
 - [Feedback Components](#feedback-components)
     - [Alert](#alert)
     - [Modal](#modal)
+    - [Notification System](#notification-system)
     - [Spinner](#spinner)
 
 ## Layout Components
@@ -54,6 +57,111 @@ Container <> ContainerProps(
   )
 )
 ```
+
+### Grid
+
+The `Grid` component provides a responsive, flexible grid layout powered by Tailwind CSS. It supports advanced features like auto-fit, masonry layouts, animations, debug overlays, and item alignment.
+
+#### Props
+
+All props map to Tailwind class names and layout features.
+
+- `children: Seq[FluxusNode]` — grid items.
+- `columns: String` — default column class (e.g., `"grid-cols-1"`).
+- `mdColumns / lgColumns / xlColumns: Option[String]` — responsive column classes.
+- `rows: String` — row configuration (e.g., `"grid-rows-3"`).
+- `mdRows / lgRows / xlRows: Option[String]` — responsive row configurations.
+- `gap: String` — overall gap class (e.g., `"gap-4"`).
+- `colGap / rowGap: Option[String]` — independent horizontal and vertical gap classes.
+- `autoFlow: String` — grid flow class (e.g., `"grid-flow-row"`).
+- `justifyItems / alignItems / justifyContent / alignContent: String` — alignment classes.
+- `autoFit / autoFill: Boolean` — enable responsive column layout using CSS `minmax(...)`.
+- `minItemWidth: String` — used with `autoFit`/`autoFill` (e.g., `"200px"`).
+- `equalHeight: Boolean` — forces uniform row heights.
+- `masonry: Boolean` — enables column-based masonry layout.
+- `masonryColumns: String` — Tailwind column classes (e.g., `"columns-1 md:columns-2"`).
+- `bordered / rounded: Boolean` — adds border and/or rounded corners.
+- `bordered3d: Boolean` — adds a 3D border style.
+- `padding: String` — Tailwind padding classes.
+- `bgClass: String` — Tailwind background classes.
+- `animate: String` — animation classes (e.g., `"animate-in fade-in"`).
+- `staggered: Boolean` — applies staggered delay animation to `GridItem`s.
+- `debug: Boolean` — enables grid debugging UI (visible cell outlines, etc.).
+- `className: String` — additional custom classes.
+- `onItemClick: Option[(dom.Event, Option[String]) => Unit]` — optional click handler.
+
+When `autoFit` or `autoFill` is true, an inline `grid-template-columns: repeat(auto-fit|auto-fill, minmax(...))` is used.
+
+When `masonry` is true, the grid becomes a column layout with `break-inside-avoid` applied to children.
+
+---
+
+### GridItem
+
+`GridItem` is a styled child of `Grid`. It supports responsive spans, alignment, animations, and interaction.
+
+#### Props
+
+- `children: FluxusNode` — content.
+- `colSpan / rowSpan / colStart / colEnd / rowStart / rowEnd: Option[String]` — grid positioning.
+- `mdColSpan / lgColSpan / xlColSpan: Option[String]` — responsive span overrides.
+- `justifySelf / alignSelf: Option[String]` — self-alignment classes.
+- `bgClass / shadow / padding / margin: Option[String]` — Tailwind styling.
+- `bordered / rounded / glass: Boolean` — extra visuals.
+- `hoverElevate / hoverHighlight: Boolean` — predefined hover effects.
+- `animate / animateDelay: Option[String]` — Tailwind animation classes.
+- `interactive: Boolean` — enables pointer and scale interaction.
+- `key: Option[String]` — used for tracking animation and interaction.
+- `onClick: Option[dom.Event => Unit]` — click handler.
+- `disabled: Boolean` — disables interactivity.
+- `className: String` — additional classes.
+
+---
+
+### AutoGrid
+
+A simplified wrapper around `Grid` for quick layouts with auto-fit behavior.
+
+#### Props (AutoGridProps)
+
+- `children: Seq[FluxusNode]` — content.
+- `itemWidth: String` — value for `minItemWidth` (e.g., `"250px"`).
+- `gap / padding / bgClass: String` — layout and styling classes.
+- `bordered / rounded / equalHeight: Boolean` — layout features.
+- `className: String` — additional styling.
+
+Internally, `AutoGrid` maps directly to `Grid` with `autoFit = true`.
+
+---
+
+### DashboardGrid
+
+A grid container that uses named CSS `grid-template-areas` for dashboards.
+
+#### Props (DashboardGridProps)
+
+- `children: Seq[FluxusNode]` — must include `GridArea` children with matching names.
+- `areas: List[String]` — row-wise strings of space-separated area names (e.g., `"header header header"`).
+- `mdAreas / lgAreas: Option[List[String]]` — responsive versions.
+- `gap / padding / bgClass: String` — layout and style.
+- `bordered / rounded: Boolean` — enable visual styling.
+- `className: String` — additional custom classes.
+
+---
+
+### GridArea
+
+Defines a named region inside a `DashboardGrid`.
+
+#### Props (GridAreaProps)
+
+- `name: String` — matches a template area in the parent `DashboardGrid`.
+- `children: Seq[FluxusNode]` — content.
+- `bgClass / padding / margin / shadow: Option[String]` — styling.
+- `bordered / rounded / glass: Boolean` — visual styling.
+- `className: String` — custom classes.
+
+A `GridArea` is positioned by setting `style := s"grid-area: $name"` and inherits styling like a `GridItem`.
 
 ---
 
@@ -171,7 +279,7 @@ Label <> LabelProps(
 
 ### Button
 
-A flexible button component with support for various styling options, icons and states.
+A versatile button component with comprehensive styling options, including all DaisyUI button variants.
 
 #### Props
 
@@ -182,41 +290,135 @@ A flexible button component with support for various styling options, icons and 
 | `variant` | `String` | `"primary"` | Button variant: primary, secondary, accent, info, success, warning, error, ghost, link, neutral |
 | `size` | `String` | `"md"` | Button size: lg, md, sm, xs |
 | `shape` | `Option[String]` | `None` | Button shape: circle, square |
+| `soft` | `Boolean` | `false` | Whether to use soft style (lower-opacity background) |
+| `dash` | `Boolean` | `false` | Whether to use dashed border style |
 | `outline` | `Boolean` | `false` | Whether to use outline style |
 | `wide` | `Boolean` | `false` | Whether to use wide style |
 | `glass` | `Boolean` | `false` | Whether to use glass effect |
 | `block` | `Boolean` | `false` | Whether to make button full width |
 | `active` | `Boolean` | `false` | Whether to force active state |
+| `focusVisible` | `Boolean` | `false` | Whether to show focus styles only with keyboard navigation |
 | `loading` | `Boolean` | `false` | Whether to show loading state |
 | `disabled` | `Boolean` | `false` | Whether button is disabled |
 | `noAnimation` | `Boolean` | `false` | Whether to disable animations |
 | `onClick` | `() => Unit` | `() => ()` | Click handler function |
-| `onMouseEnter` | `Option[dom.MouseEvent => Unit]` | `None` | Mouse enter handler |
-| `onMouseLeave` | `Option[dom.MouseEvent => Unit]` | `None` | Mouse leave handler |
 | `startIcon` | `Option[FluxusNode]` | `None` | Icon to display at start of button |
 | `endIcon` | `Option[FluxusNode]` | `None` | Icon to display at end of button |
 | `className` | `String` | `""` | Additional CSS classes |
-| `ariaLabel` | `Option[String]` | `None` | Accessibility label |
-| `tabIndex` | `Option[Int]` | `None` | Tab index for focus control |
-| `buttonRole` | `Option[String]` | `None` | ARIA role attribute |
-| `buttonType` | `String` | `"button"` | HTML button type: button, submit, reset |
-| `name` | `Option[String]` | `None` | HTML name attribute |
-| `value` | `Option[String]` | `None` | HTML value attribute |
 
-#### Example
+#### Examples
+
+##### Basic Variants
 
 ```scala
+Button <> ButtonProps(text = "Default")
+Button <> ButtonProps(text = "Primary", variant = "primary")
+Button <> ButtonProps(text = "Secondary", variant = "secondary")
+Button <> ButtonProps(text = "Accent", variant = "accent")
+Button <> ButtonProps(text = "Info", variant = "info")
+Button <> ButtonProps(text = "Success", variant = "success")
+Button <> ButtonProps(text = "Warning", variant = "warning")
+Button <> ButtonProps(text = "Error", variant = "error")
+```
+
+##### Soft and Dash Variants
+
+```scala
+// Soft buttons (lower-opacity background)
+Button <> ButtonProps(text = "Soft Primary", variant = "primary", soft = true)
+Button <> ButtonProps(text = "Soft Secondary", variant = "secondary", soft = true)
+
+// Dash buttons (dashed border)
+Button <> ButtonProps(text = "Dash Primary", variant = "primary", dash = true)
+Button <> ButtonProps(text = "Dash Secondary", variant = "secondary", dash = true)
+```
+
+##### Sizes
+
+```scala
+Button <> ButtonProps(text = "Large", size = "lg", variant = "primary")
+Button <> ButtonProps(text = "Normal", variant = "primary") // Default is "md"
+Button <> ButtonProps(text = "Small", size = "sm", variant = "primary")
+Button <> ButtonProps(text = "Tiny", size = "xs", variant = "primary")
+```
+
+##### Styles
+
+```scala
+// Outline
+Button <> ButtonProps(text = "Outline", variant = "primary", outline = true)
+
+// Wide (medium width)
+Button <> ButtonProps(text = "Wide", variant = "primary", wide = true)
+
+// Block (full width)
+Button <> ButtonProps(text = "Block", variant = "primary", block = true)
+
+// Glass effect
+Button <> ButtonProps(text = "Glass", glass = true)
+
+// Shapes
+Button <> ButtonProps(variant = "primary", shape = Some("circle"), children = Some(PlusIcon))
+Button <> ButtonProps(variant = "primary", shape = Some("square"), children = Some(PlusIcon))
+```
+
+##### States
+
+```scala
+// Loading
+Button <> ButtonProps(text = "Loading", variant = "primary", loading = true)
+
+// Disabled
+Button <> ButtonProps(text = "Disabled", variant = "primary", disabled = true)
+
+// Active
+Button <> ButtonProps(text = "Active", variant = "primary", active = true)
+
+// No animation
+Button <> ButtonProps(text = "No Animation", variant = "primary", noAnimation = true)
+```
+
+##### With Icons
+
+```scala
+// Start icon
 Button <> ButtonProps(
-  text = "Click Me",
+  text = "Add Item",
   variant = "primary",
-  size = "md",
-  outline = true,
-  startIcon = Some(svg(
-    // SVG content for icon
-  )),
-  onClick = () => handleClick(),
-  disabled = false,
-  className = "mt-4"
+  startIcon = Some(PlusIcon)
+)
+
+// End icon
+Button <> ButtonProps(
+  text = "Next Page",
+  variant = "primary",
+  endIcon = Some(ArrowIcon)
+)
+
+// Icon-only button
+Button <> ButtonProps(
+  variant = "primary",
+  shape = Some("circle"),
+  children = Some(PlusIcon)
+)
+```
+
+#### Combining Styles
+
+```scala
+// Combining multiple style modifiers
+Button <> ButtonProps(
+  text = "Soft Outline",
+  variant = "primary",
+  soft = true,
+  outline = true
+)
+
+Button <> ButtonProps(
+  text = "Wide Dash",
+  variant = "secondary",
+  dash = true,
+  wide = true
 )
 ```
 
@@ -711,6 +913,37 @@ Card <> CardProps(
 )
 ```
 
+### Pagination
+
+A component for page navigation in paginated interfaces.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `currentPage` | `Int` | `1` | Current active page |
+| `totalPages` | `Int` | `1` | Total number of pages |
+| `onPageChange` | `Int => Unit` | `_ => ()` | Page change handler |
+| `size` | `String` | `"md"` | Button size: sm, md, lg |
+| `showFirstLast` | `Boolean` | `true` | Show first/last page buttons |
+| `showPageNumbers` | `Boolean` | `true` | Show numbered page buttons |
+| `maxDisplayedPages` | `Int` | `5` | Maximum number of page buttons |
+| `className` | `String` | `""` | Additional CSS classes |
+
+#### Example
+
+```scala
+val (currentPage, setCurrentPage, _) = useState(1)
+
+Pagination <> PaginationProps(
+  currentPage = currentPage,
+  totalPages = 10,
+  onPageChange = setCurrentPage,
+  size = "sm",
+  showFirstLast = true
+)
+```
+
 ### Table
 
 A powerful table component for displaying data with sorting, pagination, and custom rendering.
@@ -822,37 +1055,6 @@ Table <> TableProps(
 )
 ```
 
-### Pagination
-
-A component for page navigation in paginated interfaces.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `currentPage` | `Int` | `1` | Current active page |
-| `totalPages` | `Int` | `1` | Total number of pages |
-| `onPageChange` | `Int => Unit` | `_ => ()` | Page change handler |
-| `size` | `String` | `"md"` | Button size: sm, md, lg |
-| `showFirstLast` | `Boolean` | `true` | Show first/last page buttons |
-| `showPageNumbers` | `Boolean` | `true` | Show numbered page buttons |
-| `maxDisplayedPages` | `Int` | `5` | Maximum number of page buttons |
-| `className` | `String` | `""` | Additional CSS classes |
-
-#### Example
-
-```scala
-val (currentPage, setCurrentPage, _) = useState(1)
-
-Pagination <> PaginationProps(
-  currentPage = currentPage,
-  totalPages = 10,
-  onPageChange = setCurrentPage,
-  size = "sm",
-  showFirstLast = true
-)
-```
-
 ### TableWithPagination
 
 A component that combines Table and Pagination for a complete paginated data solution.
@@ -897,6 +1099,54 @@ TableWithPagination <> TableWithPaginationProps(
   headerBgClass = "bg-base-300"
 )
 ```
+
+### Tooltip
+
+A tooltip component that displays informational text when hovering over an element.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tip` | `String` | _required_ | Text content of the tooltip |
+| `position` | `Option[String]` | `None` | Position: top, bottom, left, right |
+| `color` | `Option[String]` | `None` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `className` | `Option[String]` | `None` | Additional CSS classes |
+| `children` | `FluxusNode` | _required_ | Element to attach the tooltip to |
+
+#### Example
+
+```scala
+// Basic tooltip
+Tooltip <> TooltipProps(
+  tip = "This is a helpful tooltip",
+  children = button(cls := "btn", "Hover me")
+)
+
+// Positioned tooltip with color
+Tooltip <> TooltipProps(
+  tip = "Click to save changes",
+  position = Some("bottom"),
+  color = Some("primary"),
+  children = button(cls := "btn btn-primary", "Save")
+)
+
+// Tooltip on an icon
+Tooltip <> TooltipProps(
+  tip = "More information",
+  position = Some("right"),
+  color = Some("info"),
+  children = span(cls := "text-lg", "ℹ️")
+)
+```
+
+#### Usage Tips
+
+- Use tooltips to provide additional context for UI elements without cluttering the interface
+- Keep tooltip text concise and clear - typically one line works best
+- Position the tooltip based on available space around the element
+- Use appropriate color variants to match the tooltip's purpose
+- Accessibility note: tooltips should supplement, not replace, clear labeling
 
 ---
 
@@ -1616,6 +1866,208 @@ ModalPresets.delete(
 - **Responsiveness**: Modals automatically adapt to screen size but can be configured with different sizes
 - **Presets**: Use the `ModalPresets` utility for common dialog types (confirmation, error, etc.)
 - **Customization**: Use the `className` props to add custom styling to different parts of the modal
+
+### Notification System
+
+A global notification/toast system that allows you to display temporary informational messages anywhere in your application.
+
+#### API Overview
+
+The `notification` object provides a set of methods to show different types of notifications:
+
+| Method | Description |
+|--------|-------------|
+| `notification.success(message, options)` | Shows a success notification |
+| `notification.error(message, options)` | Shows an error notification |
+| `notification.info(message, options)` | Shows an info notification |
+| `notification.warning(message, options)` | Shows a warning notification |
+| `notification.neutral(message, options)` | Shows a neutral notification |
+| `notification.show(...)` | Core method with all configuration options |
+| `notification.close(id)` | Closes a specific notification by ID |
+| `notification.closeAll()` | Closes all active notifications |
+
+#### ToastOptions
+
+The configuration options for notifications:
+
+```scala
+case class ToastOptions(
+    title: Option[String] = None,               // Optional title
+    duration: Option[Int] = None,               // Duration in milliseconds before auto-dismiss
+    position: Option[String] = None,            // Position on screen
+    actions: Option[FluxusNode] = None,         // Action buttons to display
+    onClose: Option[() => Unit] = None,         // Callback when notification closes
+)
+```
+
+#### Basic Usage
+
+```scala
+// Simple success notification
+notification.success("Operation completed successfully!")
+
+// Error notification with title
+notification.error(
+  "Failed to save changes to the document",
+  ToastOptions(title = Some("Save Failed"))
+)
+
+// Info notification with custom duration
+notification.info(
+  "This notification will stay longer",
+  ToastOptions(duration = Some(8000)) // 8 seconds
+)
+
+// Warning notification with custom position
+notification.warning(
+  "Please check your input values",
+  ToastOptions(position = Some("bottom-end"))
+)
+```
+
+#### Positions
+
+The notification system supports different positions on screen:
+
+- `"top-start"` - Top left
+- `"top-center"` - Top center
+- `"top-end"` - Top right (default)
+- `"middle"` - Center of screen
+- `"bottom-start"` - Bottom left
+- `"bottom-center"` - Bottom center
+- `"bottom-end"` - Bottom right
+
+```scala
+// Show notification at the top-center
+notification.info(
+  "New updates available",
+  ToastOptions(position = Some("top-center"))
+)
+
+// Show notification at the bottom-center
+notification.success(
+  "Your changes have been saved",
+  ToastOptions(position = Some("bottom-center"))
+)
+```
+
+#### Duration
+
+Control how long notifications stay visible:
+
+```scala
+// Short notification (2 seconds)
+notification.info(
+  "This notification will disappear quickly",
+  ToastOptions(duration = Some(2000))
+)
+
+// Long notification (10 seconds)
+notification.info(
+  "This notification will stay longer",
+  ToastOptions(duration = Some(10000))
+)
+
+// Persistent notification (won't auto-dismiss)
+notification.warning(
+  "This notification won't auto-dismiss. Click the X to close it.",
+  ToastOptions(duration = Some(0))  // 0 means no auto-dismiss
+)
+```
+
+#### Advanced Usage
+
+You can use the core `show` method for more control:
+
+```scala
+// Initialize variable for the notification ID
+var notificationId = ""
+
+// Show a notification with actions that reference its own ID
+notificationId = notification.show(
+  message = Some("A new version is available for download."),
+  title = Some("Update Available"),
+  variant = "info",
+  duration = 0,  // Won't auto-dismiss
+  position = "top-end",
+  actions = Some(
+    div(
+      cls := "flex flex-col gap-2 mt-2",
+      Button <> ButtonProps(
+        text = "Update Now",
+        variant = "primary",
+        size = "xs",
+        className = "w-full",
+        onClick = () => {
+          // Close this notification
+          notification.close(notificationId)
+          
+          // Show success notification
+          notification.success("Update started successfully")
+        }
+      ),
+      Button <> ButtonProps(
+        text = "Later",
+        variant = "ghost",
+        size = "xs",
+        className = "w-full",
+        onClick = () => notification.close(notificationId)
+      )
+    )
+  )
+)
+```
+
+#### Notification Stacking
+
+Notifications automatically stack when multiple are shown:
+
+```scala
+// Show multiple notifications
+Button <> ButtonProps(
+  text = "Show Multiple Notifications",
+  variant = "primary",
+  onClick = () => {
+    // Create 3 notifications
+    notification.info("First notification")
+    notification.success("Second notification")
+    notification.warning("Third notification")
+  }
+)
+```
+
+#### Clearing Notifications
+
+```scala
+// Close all notifications
+Button <> ButtonProps(
+  text = "Clear All Notifications",
+  variant = "error",
+  onClick = () => notification.closeAll()
+)
+```
+
+#### Implementation Notes
+
+- Notifications are automatically rendered into a specially created container in the DOM
+- You don't need to add any container component to your app
+- Notifications use DaisyUI's alert component internally with appropriate styling
+- The notification system uses an internal Var to track active toast notifications
+- Notifications are automatically removed from this state when closed or auto-dismissed
+
+#### Usage Tips
+
+- Use short, concise messages that communicate the essential information
+- Choose the appropriate notification type based on the context:
+  - `success` for successful operations
+  - `error` for failures and errors
+  - `warning` for potential issues or cautions
+  - `info` for neutral information
+- For important messages, use a longer duration or set `duration = 0` to prevent auto-dismissal
+- For interactive notifications, add action buttons with the `actions` property
+- Consider the position based on the importance and context of the notification:
+  - Important alerts often work better at the top of the screen
+  - Less critical information can appear at the bottom
 
 ### Spinner
 

@@ -5,6 +5,8 @@
 AlertTest.scala
 AvatarTest.scala
 BadgeTest.scala
+ButtonTest.scala
+GridTest.scala
 InputTest.scala
 LabelTest.scala
 main.scala
@@ -17,6 +19,7 @@ SpinnerTest.scala
 TableTest.scala
 TabsTest.scala
 ToastTest.scala
+TooltipTest.scala
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
@@ -24,8 +27,10 @@ Alert.scala
 Avatar.scala
 Badge.scala
 Button.scala
+ButtonGroup.scala
 Card.scala
 Container.scala
+Grid.scala
 Input.scala
 Label.scala
 Modal.scala
@@ -36,6 +41,7 @@ Sidebar.scala
 Spinner.scala
 Table.scala
 Tabs.scala
+Tooltip.scala
 
 # build files
 ./
