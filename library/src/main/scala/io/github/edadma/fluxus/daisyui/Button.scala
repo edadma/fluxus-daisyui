@@ -13,12 +13,27 @@ case class ButtonProps(
     size: String = "md",          // lg, md, sm, xs
     shape: Option[String] = None, // circle, square
 
-    // Style modifiers
+    // Button style modifiers
+    soft: Boolean = false, // Softer, lower-opacity version of the variant color
+    dash: Boolean = false, // Dashed border style
     outline: Boolean = false,
     wide: Boolean = false,
     glass: Boolean = false,
-    block: Boolean = false,  // Full width button
-    active: Boolean = false, // Force active state
+    block: Boolean = false,        // Full width button
+    active: Boolean = false,       // Force active state
+    focusVisible: Boolean = false, // Only show focus styles with keyboard navigation
+
+    // Responsive variants
+    smVariant: Option[String] = None, // variant at sm breakpoint
+    mdVariant: Option[String] = None, // variant at md breakpoint
+    lgVariant: Option[String] = None, // variant at lg breakpoint
+    xlVariant: Option[String] = None, // variant at xl breakpoint
+
+    // Responsive sizes
+    smSize: Option[String] = None, // size at sm breakpoint
+    mdSize: Option[String] = None, // size at md breakpoint
+    lgSize: Option[String] = None, // size at lg breakpoint
+    xlSize: Option[String] = None, // size at xl breakpoint
 
     // State indicators
     loading: Boolean = false,
@@ -52,6 +67,9 @@ case class ButtonProps(
   *   - Support for both text and children content
   *   - Accessibility attributes
   *   - Extended event handlers
+  *   - Responsive variants at different breakpoints
+  *   - Focus-visible utility support
+  *   - Soft and dash button variants
   */
 val Button = (props: ButtonProps) => {
   val classes = List.newBuilder[String]
@@ -90,16 +108,127 @@ val Button = (props: ButtonProps) => {
     case _              => ""
   }
 
+  // Handle responsive variants - must use predefined Tailwind classes
+  val smVariantClass = props.smVariant match {
+    case Some("primary")   => "sm:btn-primary"
+    case Some("secondary") => "sm:btn-secondary"
+    case Some("accent")    => "sm:btn-accent"
+    case Some("info")      => "sm:btn-info"
+    case Some("success")   => "sm:btn-success"
+    case Some("warning")   => "sm:btn-warning"
+    case Some("error")     => "sm:btn-error"
+    case Some("ghost")     => "sm:btn-ghost"
+    case Some("link")      => "sm:btn-link"
+    case Some("neutral")   => "sm:btn-neutral"
+    case _                 => ""
+  }
+
+  val mdVariantClass = props.mdVariant match {
+    case Some("primary")   => "md:btn-primary"
+    case Some("secondary") => "md:btn-secondary"
+    case Some("accent")    => "md:btn-accent"
+    case Some("info")      => "md:btn-info"
+    case Some("success")   => "md:btn-success"
+    case Some("warning")   => "md:btn-warning"
+    case Some("error")     => "md:btn-error"
+    case Some("ghost")     => "md:btn-ghost"
+    case Some("link")      => "md:btn-link"
+    case Some("neutral")   => "md:btn-neutral"
+    case _                 => ""
+  }
+
+  val lgVariantClass = props.lgVariant match {
+    case Some("primary")   => "lg:btn-primary"
+    case Some("secondary") => "lg:btn-secondary"
+    case Some("accent")    => "lg:btn-accent"
+    case Some("info")      => "lg:btn-info"
+    case Some("success")   => "lg:btn-success"
+    case Some("warning")   => "lg:btn-warning"
+    case Some("error")     => "lg:btn-error"
+    case Some("ghost")     => "lg:btn-ghost"
+    case Some("link")      => "lg:btn-link"
+    case Some("neutral")   => "lg:btn-neutral"
+    case _                 => ""
+  }
+
+  val xlVariantClass = props.xlVariant match {
+    case Some("primary")   => "xl:btn-primary"
+    case Some("secondary") => "xl:btn-secondary"
+    case Some("accent")    => "xl:btn-accent"
+    case Some("info")      => "xl:btn-info"
+    case Some("success")   => "xl:btn-success"
+    case Some("warning")   => "xl:btn-warning"
+    case Some("error")     => "xl:btn-error"
+    case Some("ghost")     => "xl:btn-ghost"
+    case Some("link")      => "xl:btn-link"
+    case Some("neutral")   => "xl:btn-neutral"
+    case _                 => ""
+  }
+
+  // Handle responsive sizes - must use predefined Tailwind classes
+  val smSizeClass = props.smSize match {
+    case Some("lg") => "sm:btn-lg"
+    case Some("md") => "sm:btn-md"
+    case Some("sm") => "sm:btn-sm"
+    case Some("xs") => "sm:btn-xs"
+    case _          => ""
+  }
+
+  val mdSizeClass = props.mdSize match {
+    case Some("lg") => "md:btn-lg"
+    case Some("md") => "md:btn-md"
+    case Some("sm") => "md:btn-sm"
+    case Some("xs") => "md:btn-xs"
+    case _          => ""
+  }
+
+  val lgSizeClass = props.lgSize match {
+    case Some("lg") => "lg:btn-lg"
+    case Some("md") => "lg:btn-md"
+    case Some("sm") => "lg:btn-sm"
+    case Some("xs") => "lg:btn-xs"
+    case _          => ""
+  }
+
+  val xlSizeClass = props.xlSize match {
+    case Some("lg") => "xl:btn-lg"
+    case Some("md") => "xl:btn-md"
+    case Some("sm") => "xl:btn-sm"
+    case Some("xs") => "xl:btn-xs"
+    case _          => ""
+  }
+
   // Add conditional classes
   if (variantClass.nonEmpty) classes += variantClass
   if (sizeClass.nonEmpty) classes += sizeClass
   if (shapeClass.nonEmpty) classes += shapeClass
+  if (smVariantClass.nonEmpty) classes += smVariantClass
+  if (mdVariantClass.nonEmpty) classes += mdVariantClass
+  if (lgVariantClass.nonEmpty) classes += lgVariantClass
+  if (xlVariantClass.nonEmpty) classes += xlVariantClass
+  if (smSizeClass.nonEmpty) classes += smSizeClass
+  if (mdSizeClass.nonEmpty) classes += mdSizeClass
+  if (lgSizeClass.nonEmpty) classes += lgSizeClass
+  if (xlSizeClass.nonEmpty) classes += xlSizeClass
+
+  // Apply soft variant styling - CORRECTED: use btn-soft as a separate class
+  if (props.soft) {
+    classes += "btn-soft"
+  }
+
+  // Apply dash variant styling - CORRECTED: use btn-dash as a separate class
+  if (props.dash) {
+    classes += "btn-dash"
+  }
+
   if (props.outline) classes += "btn-outline"
   if (props.wide) classes += "btn-wide"
   if (props.block) classes += "btn-block"
   if (props.glass) classes += "glass"
   if (props.loading) classes += "btn-loading"
   if (props.active) classes += "btn-active"
+  if (props.focusVisible)
+    classes += "focus-visible:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
   if (props.noAnimation) classes += "no-animation"
 
   // Add any custom classes

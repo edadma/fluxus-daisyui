@@ -5,6 +5,7 @@
 AlertTest.scala
 AvatarTest.scala
 BadgeTest.scala
+ButtonTest.scala
 GridTest.scala
 InputTest.scala
 LabelTest.scala
@@ -25,6 +26,7 @@ Alert.scala
 Avatar.scala
 Badge.scala
 Button.scala
+ButtonGroup.scala
 Card.scala
 Container.scala
 Grid.scala
