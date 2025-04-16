@@ -279,7 +279,7 @@ Label <> LabelProps(
 
 ### Button
 
-A flexible button component with support for various styling options, icons and states.
+A versatile button component with comprehensive styling options, including all DaisyUI button variants.
 
 #### Props
 
@@ -290,41 +290,135 @@ A flexible button component with support for various styling options, icons and 
 | `variant` | `String` | `"primary"` | Button variant: primary, secondary, accent, info, success, warning, error, ghost, link, neutral |
 | `size` | `String` | `"md"` | Button size: lg, md, sm, xs |
 | `shape` | `Option[String]` | `None` | Button shape: circle, square |
+| `soft` | `Boolean` | `false` | Whether to use soft style (lower-opacity background) |
+| `dash` | `Boolean` | `false` | Whether to use dashed border style |
 | `outline` | `Boolean` | `false` | Whether to use outline style |
 | `wide` | `Boolean` | `false` | Whether to use wide style |
 | `glass` | `Boolean` | `false` | Whether to use glass effect |
 | `block` | `Boolean` | `false` | Whether to make button full width |
 | `active` | `Boolean` | `false` | Whether to force active state |
+| `focusVisible` | `Boolean` | `false` | Whether to show focus styles only with keyboard navigation |
 | `loading` | `Boolean` | `false` | Whether to show loading state |
 | `disabled` | `Boolean` | `false` | Whether button is disabled |
 | `noAnimation` | `Boolean` | `false` | Whether to disable animations |
 | `onClick` | `() => Unit` | `() => ()` | Click handler function |
-| `onMouseEnter` | `Option[dom.MouseEvent => Unit]` | `None` | Mouse enter handler |
-| `onMouseLeave` | `Option[dom.MouseEvent => Unit]` | `None` | Mouse leave handler |
 | `startIcon` | `Option[FluxusNode]` | `None` | Icon to display at start of button |
 | `endIcon` | `Option[FluxusNode]` | `None` | Icon to display at end of button |
 | `className` | `String` | `""` | Additional CSS classes |
-| `ariaLabel` | `Option[String]` | `None` | Accessibility label |
-| `tabIndex` | `Option[Int]` | `None` | Tab index for focus control |
-| `buttonRole` | `Option[String]` | `None` | ARIA role attribute |
-| `buttonType` | `String` | `"button"` | HTML button type: button, submit, reset |
-| `name` | `Option[String]` | `None` | HTML name attribute |
-| `value` | `Option[String]` | `None` | HTML value attribute |
 
-#### Example
+#### Examples
+
+##### Basic Variants
 
 ```scala
+Button <> ButtonProps(text = "Default")
+Button <> ButtonProps(text = "Primary", variant = "primary")
+Button <> ButtonProps(text = "Secondary", variant = "secondary")
+Button <> ButtonProps(text = "Accent", variant = "accent")
+Button <> ButtonProps(text = "Info", variant = "info")
+Button <> ButtonProps(text = "Success", variant = "success")
+Button <> ButtonProps(text = "Warning", variant = "warning")
+Button <> ButtonProps(text = "Error", variant = "error")
+```
+
+##### Soft and Dash Variants
+
+```scala
+// Soft buttons (lower-opacity background)
+Button <> ButtonProps(text = "Soft Primary", variant = "primary", soft = true)
+Button <> ButtonProps(text = "Soft Secondary", variant = "secondary", soft = true)
+
+// Dash buttons (dashed border)
+Button <> ButtonProps(text = "Dash Primary", variant = "primary", dash = true)
+Button <> ButtonProps(text = "Dash Secondary", variant = "secondary", dash = true)
+```
+
+##### Sizes
+
+```scala
+Button <> ButtonProps(text = "Large", size = "lg", variant = "primary")
+Button <> ButtonProps(text = "Normal", variant = "primary") // Default is "md"
+Button <> ButtonProps(text = "Small", size = "sm", variant = "primary")
+Button <> ButtonProps(text = "Tiny", size = "xs", variant = "primary")
+```
+
+##### Styles
+
+```scala
+// Outline
+Button <> ButtonProps(text = "Outline", variant = "primary", outline = true)
+
+// Wide (medium width)
+Button <> ButtonProps(text = "Wide", variant = "primary", wide = true)
+
+// Block (full width)
+Button <> ButtonProps(text = "Block", variant = "primary", block = true)
+
+// Glass effect
+Button <> ButtonProps(text = "Glass", glass = true)
+
+// Shapes
+Button <> ButtonProps(variant = "primary", shape = Some("circle"), children = Some(PlusIcon))
+Button <> ButtonProps(variant = "primary", shape = Some("square"), children = Some(PlusIcon))
+```
+
+##### States
+
+```scala
+// Loading
+Button <> ButtonProps(text = "Loading", variant = "primary", loading = true)
+
+// Disabled
+Button <> ButtonProps(text = "Disabled", variant = "primary", disabled = true)
+
+// Active
+Button <> ButtonProps(text = "Active", variant = "primary", active = true)
+
+// No animation
+Button <> ButtonProps(text = "No Animation", variant = "primary", noAnimation = true)
+```
+
+##### With Icons
+
+```scala
+// Start icon
 Button <> ButtonProps(
-  text = "Click Me",
+  text = "Add Item",
   variant = "primary",
-  size = "md",
-  outline = true,
-  startIcon = Some(svg(
-    // SVG content for icon
-  )),
-  onClick = () => handleClick(),
-  disabled = false,
-  className = "mt-4"
+  startIcon = Some(PlusIcon)
+)
+
+// End icon
+Button <> ButtonProps(
+  text = "Next Page",
+  variant = "primary",
+  endIcon = Some(ArrowIcon)
+)
+
+// Icon-only button
+Button <> ButtonProps(
+  variant = "primary",
+  shape = Some("circle"),
+  children = Some(PlusIcon)
+)
+```
+
+#### Combining Styles
+
+```scala
+// Combining multiple style modifiers
+Button <> ButtonProps(
+  text = "Soft Outline",
+  variant = "primary",
+  soft = true,
+  outline = true
+)
+
+Button <> ButtonProps(
+  text = "Wide Dash",
+  variant = "secondary",
+  dash = true,
+  wide = true
 )
 ```
 
