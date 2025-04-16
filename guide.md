@@ -17,9 +17,10 @@ This document provides comprehensive documentation for all components in the flu
     - [AvatarGroup](#avatargroup)
     - [Badge](#badge)
     - [Card](#card)
+    - [Pagination](#pagination)
     - [Table](#table)
     - [TableWithPagination](#tablewithpagination)
-    - [Pagination](#pagination)
+    - [Tooltip](#tooltip)
 - [Navigation Components](#navigation-components)
     - [Sidebar](#sidebar)
     - [Tabs](#tabs)
@@ -818,6 +819,37 @@ Card <> CardProps(
 )
 ```
 
+### Pagination
+
+A component for page navigation in paginated interfaces.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `currentPage` | `Int` | `1` | Current active page |
+| `totalPages` | `Int` | `1` | Total number of pages |
+| `onPageChange` | `Int => Unit` | `_ => ()` | Page change handler |
+| `size` | `String` | `"md"` | Button size: sm, md, lg |
+| `showFirstLast` | `Boolean` | `true` | Show first/last page buttons |
+| `showPageNumbers` | `Boolean` | `true` | Show numbered page buttons |
+| `maxDisplayedPages` | `Int` | `5` | Maximum number of page buttons |
+| `className` | `String` | `""` | Additional CSS classes |
+
+#### Example
+
+```scala
+val (currentPage, setCurrentPage, _) = useState(1)
+
+Pagination <> PaginationProps(
+  currentPage = currentPage,
+  totalPages = 10,
+  onPageChange = setCurrentPage,
+  size = "sm",
+  showFirstLast = true
+)
+```
+
 ### Table
 
 A powerful table component for displaying data with sorting, pagination, and custom rendering.
@@ -929,37 +961,6 @@ Table <> TableProps(
 )
 ```
 
-### Pagination
-
-A component for page navigation in paginated interfaces.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `currentPage` | `Int` | `1` | Current active page |
-| `totalPages` | `Int` | `1` | Total number of pages |
-| `onPageChange` | `Int => Unit` | `_ => ()` | Page change handler |
-| `size` | `String` | `"md"` | Button size: sm, md, lg |
-| `showFirstLast` | `Boolean` | `true` | Show first/last page buttons |
-| `showPageNumbers` | `Boolean` | `true` | Show numbered page buttons |
-| `maxDisplayedPages` | `Int` | `5` | Maximum number of page buttons |
-| `className` | `String` | `""` | Additional CSS classes |
-
-#### Example
-
-```scala
-val (currentPage, setCurrentPage, _) = useState(1)
-
-Pagination <> PaginationProps(
-  currentPage = currentPage,
-  totalPages = 10,
-  onPageChange = setCurrentPage,
-  size = "sm",
-  showFirstLast = true
-)
-```
-
 ### TableWithPagination
 
 A component that combines Table and Pagination for a complete paginated data solution.
@@ -1004,6 +1005,54 @@ TableWithPagination <> TableWithPaginationProps(
   headerBgClass = "bg-base-300"
 )
 ```
+
+### Tooltip
+
+A tooltip component that displays informational text when hovering over an element.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tip` | `String` | _required_ | Text content of the tooltip |
+| `position` | `Option[String]` | `None` | Position: top, bottom, left, right |
+| `color` | `Option[String]` | `None` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `className` | `Option[String]` | `None` | Additional CSS classes |
+| `children` | `FluxusNode` | _required_ | Element to attach the tooltip to |
+
+#### Example
+
+```scala
+// Basic tooltip
+Tooltip <> TooltipProps(
+  tip = "This is a helpful tooltip",
+  children = button(cls := "btn", "Hover me")
+)
+
+// Positioned tooltip with color
+Tooltip <> TooltipProps(
+  tip = "Click to save changes",
+  position = Some("bottom"),
+  color = Some("primary"),
+  children = button(cls := "btn btn-primary", "Save")
+)
+
+// Tooltip on an icon
+Tooltip <> TooltipProps(
+  tip = "More information",
+  position = Some("right"),
+  color = Some("info"),
+  children = span(cls := "text-lg", "ℹ️")
+)
+```
+
+#### Usage Tips
+
+- Use tooltips to provide additional context for UI elements without cluttering the interface
+- Keep tooltip text concise and clear - typically one line works best
+- Position the tooltip based on available space around the element
+- Use appropriate color variants to match the tooltip's purpose
+- Accessibility note: tooltips should supplement, not replace, clear labeling
 
 ---
 
