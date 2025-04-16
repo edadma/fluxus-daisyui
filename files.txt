@@ -17,6 +17,7 @@ SpinnerTest.scala
 TableTest.scala
 TabsTest.scala
 ToastTest.scala
+TooltipTest.scala
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
@@ -36,6 +37,7 @@ Sidebar.scala
 Spinner.scala
 Table.scala
 Tabs.scala
+Tooltip.scala
 
 # build files
 ./
