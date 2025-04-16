@@ -9,6 +9,7 @@ InputTest.scala
 LabelTest.scala
 main.scala
 ModalTest.scala
+RadioGroupTest.scala
 SelectTest.scala
 SidebarTest.scala
 SimpleComponentTest.scala
@@ -29,6 +30,7 @@ Input.scala
 Label.scala
 Modal.scala
 notification.scala
+RadioGroup.scala
 Select.scala
 Sidebar.scala
 Spinner.scala
