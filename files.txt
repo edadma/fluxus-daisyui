@@ -18,6 +18,7 @@ SimpleComponentTest.scala
 SpinnerTest.scala
 TableTest.scala
 TabsTest.scala
+ThemeChooserTest.scala
 ToastTest.scala
 TooltipTest.scala
 
@@ -41,6 +42,7 @@ Sidebar.scala
 Spinner.scala
 Table.scala
 Tabs.scala
+ThemeChooser.scala
 Tooltip.scala
 
 # build files
