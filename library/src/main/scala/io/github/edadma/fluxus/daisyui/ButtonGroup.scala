@@ -37,12 +37,12 @@ case class ButtonGroupProps(
 val ButtonGroup = (props: ButtonGroupProps) => {
   val classes = List.newBuilder[String]
 
-  // Base class is always present
-  classes += "btn-groupx"
+  // Base class - using DaisyUI's 'join' class
+  classes += "join"
 
-  // Vertical orientation
+  // Vertical orientation - using DaisyUI's vertical join
   if (props.vertical) {
-    classes += "btn-group-vertical"
+    classes += "join-vertical"
   }
 
   // Responsive stacking - we'll use flex direction utilities
@@ -69,25 +69,31 @@ val ButtonGroup = (props: ButtonGroupProps) => {
   // Join all classes
   val groupClass = classes.result().mkString(" ")
 
-  // Process children to apply consistent styling if needed
+  // Process children to apply consistent styling if needed and add join-item class
   val processedChildren =
-    if (props.size.isDefined || props.variant.isDefined) {
-      // Only apply overrides if specified
-      props.children.map {
-        case btn: ComponentNode if btn.component.toString.contains("Button") =>
-          // Extract props and update with size/variant override
-          val originalProps = btn.props.asInstanceOf[ButtonProps]
-          val newProps = originalProps.copy(
-            size = props.size.getOrElse(originalProps.size),
-            variant = props.variant.getOrElse(originalProps.variant),
-          )
+    props.children.map {
+      case btn: ComponentNode if btn.component.toString.contains("Button") =>
+        // Extract props and update with size/variant override and add join-item class
+        val originalProps = btn.props.asInstanceOf[ButtonProps]
 
-          Button <> newProps
+        // Create new class that combines existing classes with join-item
+        val newClassName = if (originalProps.className.isEmpty) "join-item"
+        else s"${originalProps.className} join-item"
 
-        case other => other // Return unmodified if not a Button
-      }
-    } else {
-      props.children
+        val newProps = originalProps.copy(
+          size = props.size.getOrElse(originalProps.size),
+          variant = props.variant.getOrElse(originalProps.variant),
+          className = newClassName,
+        )
+
+        Button <> newProps
+
+      case other =>
+        // For non-Button components, wrap in a div with join-item class to maintain consistency
+        div(
+          cls := "join-item",
+          other,
+        )
     }
 
   // Render the button group
