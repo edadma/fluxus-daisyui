@@ -28,7 +28,11 @@ case class ThemeChooserProps(
   */
 val ThemeChooser = (props: ThemeChooserProps) => {
   // Current active theme
-  val (currentTheme, setCurrentTheme, _) = useState("")
+  val initialTheme = Option(dom.document.documentElement.getAttribute("data-theme"))
+    .filter(_.nonEmpty)
+    .getOrElse(props.defaultTheme)
+
+  val (currentTheme, setCurrentTheme, _) = useState(initialTheme)
 
   // Whether we're in auto (system preference) mode
   val (isAutoTheme, setIsAutoTheme, _) = useState(false)
