@@ -11,6 +11,7 @@ InputTest.scala
 LabelTest.scala
 main.scala
 ModalTest.scala
+ProgressTest.scala
 RadioGroupTest.scala
 SelectTest.scala
 SidebarTest.scala
@@ -36,6 +37,7 @@ Input.scala
 Label.scala
 Modal.scala
 notification.scala
+Progress.scala
 RadioGroup.scala
 Select.scala
 Sidebar.scala
