@@ -1106,6 +1106,237 @@ Pagination <> PaginationProps(
 )
 ```
 
+### Progress
+
+A progress bar component with linear and radial options for showing completion status or loading state.
+
+#### ProgressProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `Option[Double]` | `None` | Current progress value (within min-max range) |
+| `min` | `Double` | `0` | Minimum value |
+| `max` | `Double` | `100` | Maximum value |
+| `variant` | `String` | `""` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `size` | `String` | `"md"` | Size variations: xs, sm, md, lg |
+| `indeterminate` | `Boolean` | `false` | Whether to show indeterminate animation |
+| `showValue` | `Boolean` | `false` | Whether to show progress value as text |
+| `valuePrefix` | `String` | `""` | Prefix for displayed value (e.g., "$") |
+| `valueSuffix` | `String` | `"%"` | Suffix for displayed value (e.g., "%") |
+| `valueFormat` | `Double => String` | `(v: Double) => v.toInt.toString` | Function to format value |
+| `className` | `String` | `""` | Additional CSS classes |
+| `ariaLabel` | `Option[String]` | `None` | Accessibility label for screen readers |
+| `ariaValuenow` | `Option[String]` | `None` | Current value for ARIA (falls back to value) |
+| `ariaValuemin` | `Option[String]` | `None` | Min value for ARIA (falls back to min) |
+| `ariaValuemax` | `Option[String]` | `None` | Max value for ARIA (falls back to max) |
+
+#### RadialProgressProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `Double` | `0` | Current progress value (within min-max range) |
+| `min` | `Double` | `0` | Minimum value |
+| `max` | `Double` | `100` | Maximum value |
+| `variant` | `String` | `""` | Color variant: primary, secondary, accent, etc. |
+| `size` | `String` | `"md"` | Size variations: xs, sm, md, lg |
+| `thickness` | `String` | `""` | Thickness of progress ring |
+| `showValue` | `Boolean` | `true` | Whether to show value in center |
+| `valuePrefix` | `String` | `""` | Prefix for displayed value |
+| `valueSuffix` | `String` | `"%"` | Suffix for displayed value |
+| `valueFormat` | `Double => String` | `(v: Double) => v.toInt.toString` | Function to format value |
+| `children` | `Option[FluxusNode]` | `None` | Custom content to show inside (overrides showValue) |
+| `className` | `String` | `""` | Additional CSS classes |
+| `ariaLabel` | `Option[String]` | `None` | Accessibility label |
+
+#### Examples
+
+##### Basic Progress Bar
+
+```scala
+// Standard progress bar at 40%
+Progress <> ProgressProps(
+  value = Some(40.0),
+  max = 100.0
+)
+
+// Progress with value display
+Progress <> ProgressProps(
+  value = Some(65.0),
+  max = 100.0,
+  showValue = true
+)
+
+// Indeterminate progress for loading states
+Progress <> ProgressProps(
+  indeterminate = true
+)
+```
+
+##### Progress Variants
+
+```scala
+// Primary color
+Progress <> ProgressProps(
+  value = Some(45.0),
+  variant = "primary"
+)
+
+// Success indicator
+Progress <> ProgressProps(
+  value = Some(100.0),
+  variant = "success",
+  showValue = true
+)
+
+// Warning at 30%
+Progress <> ProgressProps(
+  value = Some(30.0),
+  variant = "warning",
+  showValue = true
+)
+```
+
+##### Progress Sizes
+
+```scala
+// Extra small
+Progress <> ProgressProps(
+  value = Some(60.0),
+  size = "xs",
+  variant = "primary"
+)
+
+// Small
+Progress <> ProgressProps(
+  value = Some(60.0),
+  size = "sm",
+  variant = "primary"
+)
+
+// Default size (medium)
+Progress <> ProgressProps(
+  value = Some(60.0),
+  variant = "primary"
+)
+
+// Large
+Progress <> ProgressProps(
+  value = Some(60.0),
+  size = "lg",
+  variant = "primary"
+)
+```
+
+##### Radial Progress
+
+```scala
+// Basic radial progress
+RadialProgress <> RadialProgressProps(
+  value = 70.0
+)
+
+// With color
+RadialProgress <> RadialProgressProps(
+  value = 70.0,
+  variant = "primary"
+)
+
+// Custom size and content
+RadialProgress <> RadialProgressProps(
+  value = 70.0,
+  variant = "secondary",
+  size = "lg",
+  children = Some(
+    div(
+      cls := "text-secondary-content flex flex-col items-center",
+      svg(
+        // SVG icon content
+      ),
+      span(cls := "text-xs mt-1", "Energy")
+    )
+  )
+)
+```
+
+##### Custom Thickness and Styling
+
+```scala
+// Thin radial progress
+RadialProgress <> RadialProgressProps(
+  value = 65.0,
+  variant = "primary",
+  thickness = "border-2"
+)
+
+// Thick radial progress
+RadialProgress <> RadialProgressProps(
+  value = 65.0,
+  variant = "accent",
+  thickness = "border-8"
+)
+```
+
+##### Interactive Progress Example
+
+```scala
+val (progressValue, setProgressValue, _) = useState(25.0)
+val (isIndeterminate, setIsIndeterminate, _) = useState(false)
+
+div(
+  cls := "space-y-4",
+  
+  // Controls
+  div(
+    cls := "flex gap-4 items-center",
+    Button <> ButtonProps(
+      text = "-10%",
+      onClick = () => setProgressValue(Math.max(0, progressValue - 10))
+    ),
+    Button <> ButtonProps(
+      text = "+10%",
+      onClick = () => setProgressValue(Math.min(100, progressValue + 10))
+    ),
+    label(
+      cls := "flex items-center gap-2 cursor-pointer",
+      "Indeterminate",
+      input(
+        typ := "checkbox",
+        cls := "toggle toggle-primary",
+        checked := isIndeterminate,
+        onChange := (() => setIsIndeterminate(!isIndeterminate))
+      )
+    )
+  ),
+  
+  // Progress bar
+  Progress <> ProgressProps(
+    value = if (!isIndeterminate) Some(progressValue) else None,
+    indeterminate = isIndeterminate,
+    variant = "primary",
+    showValue = !isIndeterminate
+  ),
+  
+  // Radial progress
+  div(
+    cls := "flex justify-center mt-4",
+    RadialProgress <> RadialProgressProps(
+      value = progressValue,
+      variant = "primary"
+    )
+  )
+)
+```
+
+#### Usage Tips
+
+- **Indeterminate Progress**: Use `indeterminate = true` when loading data and the completion percentage is unknown
+- **Accessibility**: Provide proper ARIA attributes for screen readers with `ariaLabel`, `ariaValuenow`, etc.
+- **Custom Formatting**: Use the `valueFormat` function to format values (e.g., for currency or large numbers)
+- **Radial vs Linear**: Use `RadialProgress` for circular indicators and `Progress` for traditional horizontal bars
+- **Custom Content**: For radial progress, use the `children` prop to place custom content within the circle
+- **Interactive Progress**: Combine with state management for dynamic progress indicators
+- **Multiple Indicators**: For complex processes, use multiple progress bars with different variants
+
 ### Table
 
 A powerful table component for displaying data with sorting, pagination, and custom rendering.
@@ -2264,6 +2495,125 @@ Spinner <> SpinnerProps(
 
 ---
 
+### ThemeChooser
+
+A theme selection component that allows users to switch between light, dark, and custom themes with automatic system preference detection.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `themes` | `List[String]` | `List("light", "dark")` | List of supported theme names |
+| `defaultTheme` | `String` | `"light"` | Default theme if no preference exists |
+| `respectSystemPreference` | `Boolean` | `true` | Whether to use system color scheme preference |
+| `variant` | `String` | `"toggle"` | UI style: toggle, dropdown, or button (modal) |
+| `alignment` | `String` | `"end"` | Dropdown alignment: start, center, end |
+| `showLabel` | `Boolean` | `false` | Whether to show "Theme" label |
+| `className` | `String` | `""` | Additional CSS classes |
+| `onThemeChange` | `Option[String => Unit]` | `None` | Callback when theme changes |
+
+#### Examples
+
+##### Toggle Variant (Light/Dark Switch)
+
+```scala
+// Simple light/dark toggle
+ThemeChooser <> ThemeChooserProps(
+  variant = "toggle",
+  themes = List("light", "dark")
+)
+
+// Toggle with label and theme change callback
+ThemeChooser <> ThemeChooserProps(
+  variant = "toggle",
+  showLabel = true,
+  onThemeChange = Some(theme => println(s"Theme changed to: $theme"))
+)
+```
+
+##### Dropdown Variant (Multiple Themes)
+
+```scala
+// Dropdown with multiple themes
+ThemeChooser <> ThemeChooserProps(
+  variant = "dropdown",
+  themes = List("light", "dark", "cupcake", "forest", "synthwave"),
+  alignment = "start",
+  showLabel = true
+)
+
+// Dropdown without system preference detection
+ThemeChooser <> ThemeChooserProps(
+  variant = "dropdown",
+  themes = List("light", "dark", "corporate", "luxury"),
+  respectSystemPreference = false,
+  defaultTheme = "corporate"
+)
+```
+
+##### Button/Modal Variant (Theme Preview Cards)
+
+```scala
+// Button that opens theme selection modal
+ThemeChooser <> ThemeChooserProps(
+  variant = "button",
+  themes = List(
+    "light", "dark", "cupcake", "forest", 
+    "aqua", "lofi", "pastel", "fantasy"
+  ),
+  onThemeChange = Some(newTheme => {
+    println(s"Theme switched to: $newTheme")
+  })
+)
+```
+
+#### How It Works
+
+The ThemeChooser component:
+
+1. Sets the `data-theme` attribute on the `html` element to apply DaisyUI themes
+2. Stores preferences in localStorage for persistence
+3. Can detect and respect system color scheme preference
+4. Supports multiple UI variants for different levels of theme control
+
+#### Implementation Details
+
+- **Theme Persistence**: Selected themes are saved to `localStorage` as "theme"
+- **System Preference**: When enabled, detects `prefers-color-scheme` media query
+- **Auto Mode**: When in auto mode (system preference), a "theme-auto" flag is saved
+- **Media Query Listener**: Automatically updates theme if system preference changes while in auto mode
+
+#### Usage Tips
+
+- **Toggle Variant**: Best for simple light/dark switching
+- **Dropdown Variant**: Good for applications with multiple theme options
+- **Button/Modal Variant**: Provides visual preview of themes before selection
+- **System Preference**: Keep `respectSystemPreference` enabled for best user experience
+- **Theme List**: Include only themes you've configured in your Tailwind/DaisyUI setup
+- **Callbacks**: Use `onThemeChange` to sync theme state with your application
+
+#### Integration with Theme Configuration
+
+To ensure all themes work properly, configure your DaisyUI themes in your Tailwind config:
+
+```js
+// tailwind.config.js
+module.exports = {
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["light", "dark", "cupcake", "forest", "synthwave"]
+  }
+}
+```
+
+Or in a CSS file using the `@plugin` directive:
+
+```css
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, cupcake, aqua, night, forest;
+}
+```
+
 ## Usage Tips
 
 ### Combining Components
@@ -2412,3 +2762,4 @@ div(
   )
 )
 ```
+
