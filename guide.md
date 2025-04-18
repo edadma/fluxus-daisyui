@@ -297,9 +297,9 @@ Label <> LabelProps(
 - **Floating Labels**: To create floating labels, set `position = "floating"` and position the label absolutely
 - **Responsive Design**: Labels work well with DaisyUI's form-control class for consistent spacing and layout
 
-### Button
+### Button Component
 
-A versatile button component with comprehensive styling options, including all DaisyUI button variants.
+The Button component provides a versatile button implementation with comprehensive styling options from DaisyUI. It can function as either a standard button or as a link when the `href` prop is provided.
 
 #### Props
 
@@ -310,6 +310,8 @@ A versatile button component with comprehensive styling options, including all D
 | `variant` | `String` | `"primary"` | Button variant: primary, secondary, accent, info, success, warning, error, ghost, link, neutral |
 | `size` | `String` | `"md"` | Button size: lg, md, sm, xs |
 | `shape` | `Option[String]` | `None` | Button shape: circle, square |
+| `href` | `Option[String]` | `None` | URL when button should act as a link |
+| `target` | `Option[String]` | `None` | Target for link (_blank, _self, etc.) |
 | `soft` | `Boolean` | `false` | Whether to use soft style (lower-opacity background) |
 | `dash` | `Boolean` | `false` | Whether to use dashed border style |
 | `outline` | `Boolean` | `false` | Whether to use outline style |
@@ -325,97 +327,74 @@ A versatile button component with comprehensive styling options, including all D
 | `startIcon` | `Option[FluxusNode]` | `None` | Icon to display at start of button |
 | `endIcon` | `Option[FluxusNode]` | `None` | Icon to display at end of button |
 | `className` | `String` | `""` | Additional CSS classes |
+| `buttonType` | `String` | `"button"` | HTML button type: button, submit, reset |
+| `name` | `Option[String]` | `None` | HTML name attribute |
+| `value` | `Option[String]` | `None` | HTML value attribute |
 
 #### Examples
 
-##### Basic Variants
+##### Basic Button Variants
 
 ```scala
-Button <> ButtonProps(text = "Default")
-Button <> ButtonProps(text = "Primary", variant = "primary")
-Button <> ButtonProps(text = "Secondary", variant = "secondary")
-Button <> ButtonProps(text = "Accent", variant = "accent")
-Button <> ButtonProps(text = "Info", variant = "info")
-Button <> ButtonProps(text = "Success", variant = "success")
-Button <> ButtonProps(text = "Warning", variant = "warning")
-Button <> ButtonProps(text = "Error", variant = "error")
+// Primary button
+Button <> ButtonProps(text = "Primary Button", variant = "primary")
+
+// Secondary button
+Button <> ButtonProps(text = "Secondary Button", variant = "secondary")
+
+// Error button with onClick handler
+Button <> ButtonProps(
+  text = "Delete",
+  variant = "error",
+  onClick = () => handleDelete()
+)
 ```
 
-##### Soft and Dash Variants
+##### Button as Link
 
 ```scala
-// Soft buttons (lower-opacity background)
-Button <> ButtonProps(text = "Soft Primary", variant = "primary", soft = true)
-Button <> ButtonProps(text = "Soft Secondary", variant = "secondary", soft = true)
+// Button as external link with target
+Button <> ButtonProps(
+  text = "Visit Website",
+  variant = "primary",
+  href = Some("https://example.com"),
+  target = Some("_blank")
+)
 
-// Dash buttons (dashed border)
-Button <> ButtonProps(text = "Dash Primary", variant = "primary", dash = true)
-Button <> ButtonProps(text = "Dash Secondary", variant = "secondary", dash = true)
+// Button as internal navigation link
+Button <> ButtonProps(
+  text = "View Profile",
+  variant = "ghost",
+  href = Some("/profile")
+)
+
+// Button as download link
+Button <> ButtonProps(
+  text = "Download PDF",
+  variant = "accent",
+  href = Some("/files/document.pdf"),
+  startIcon = Some(DownloadIcon)
+)
 ```
 
-##### Sizes
+##### Button with Icons
 
 ```scala
-Button <> ButtonProps(text = "Large", size = "lg", variant = "primary")
-Button <> ButtonProps(text = "Normal", variant = "primary") // Default is "md"
-Button <> ButtonProps(text = "Small", size = "sm", variant = "primary")
-Button <> ButtonProps(text = "Tiny", size = "xs", variant = "primary")
-```
-
-##### Styles
-
-```scala
-// Outline
-Button <> ButtonProps(text = "Outline", variant = "primary", outline = true)
-
-// Wide (medium width)
-Button <> ButtonProps(text = "Wide", variant = "primary", wide = true)
-
-// Block (full width)
-Button <> ButtonProps(text = "Block", variant = "primary", block = true)
-
-// Glass effect
-Button <> ButtonProps(text = "Glass", glass = true)
-
-// Shapes
-Button <> ButtonProps(variant = "primary", shape = Some("circle"), children = Some(PlusIcon))
-Button <> ButtonProps(variant = "primary", shape = Some("square"), children = Some(PlusIcon))
-```
-
-##### States
-
-```scala
-// Loading
-Button <> ButtonProps(text = "Loading", variant = "primary", loading = true)
-
-// Disabled
-Button <> ButtonProps(text = "Disabled", variant = "primary", disabled = true)
-
-// Active
-Button <> ButtonProps(text = "Active", variant = "primary", active = true)
-
-// No animation
-Button <> ButtonProps(text = "No Animation", variant = "primary", noAnimation = true)
-```
-
-##### With Icons
-
-```scala
-// Start icon
+// Button with start icon
 Button <> ButtonProps(
   text = "Add Item",
   variant = "primary",
   startIcon = Some(PlusIcon)
 )
 
-// End icon
+// Button with end icon
 Button <> ButtonProps(
   text = "Next Page",
-  variant = "primary",
-  endIcon = Some(ArrowIcon)
+  variant = "secondary",
+  endIcon = Some(ArrowRightIcon)
 )
 
-// Icon-only button
+// Icon-only button (using shape)
 Button <> ButtonProps(
   variant = "primary",
   shape = Some("circle"),
@@ -423,24 +402,123 @@ Button <> ButtonProps(
 )
 ```
 
-#### Combining Styles
+##### Style Variations
 
 ```scala
-// Combining multiple style modifiers
+// Outline style
 Button <> ButtonProps(
-  text = "Soft Outline",
+  text = "Outline",
   variant = "primary",
-  soft = true,
   outline = true
 )
 
+// Soft style (lower opacity)
 Button <> ButtonProps(
-  text = "Wide Dash",
+  text = "Soft Button",
+  variant = "primary",
+  soft = true
+)
+
+// Dash style (dashed border)
+Button <> ButtonProps(
+  text = "Dashed Button",
   variant = "secondary",
-  dash = true,
+  dash = true
+)
+
+// Glass effect
+Button <> ButtonProps(
+  text = "Glass Button",
+  variant = "primary",
+  glass = true
+)
+
+// Wide style
+Button <> ButtonProps(
+  text = "Wide Button",
+  variant = "accent",
   wide = true
 )
+
+// Block (full width) button
+Button <> ButtonProps(
+  text = "Block Button",
+  variant = "info",
+  block = true
+)
 ```
+
+##### Size Variations
+
+```scala
+// Extra small
+Button <> ButtonProps(text = "Extra Small", size = "xs")
+
+// Small
+Button <> ButtonProps(text = "Small", size = "sm")
+
+// Medium (default)
+Button <> ButtonProps(text = "Medium")
+
+// Large
+Button <> ButtonProps(text = "Large", size = "lg")
+```
+
+##### State Variations
+
+```scala
+// Loading state
+Button <> ButtonProps(
+  text = "Loading...",
+  variant = "primary",
+  loading = true
+)
+
+// Disabled state
+Button <> ButtonProps(
+  text = "Disabled",
+  variant = "primary",
+  disabled = true
+)
+
+// Active state
+Button <> ButtonProps(
+  text = "Active",
+  variant = "primary",
+  active = true
+)
+```
+
+##### Form Submission
+
+```scala
+// Submit button
+Button <> ButtonProps(
+  text = "Submit Form",
+  variant = "primary",
+  buttonType = "submit"
+)
+
+// Reset button
+Button <> ButtonProps(
+  text = "Reset Form",
+  variant = "ghost",
+  buttonType = "reset"
+)
+```
+
+#### Best Practices
+
+- Use the `href` prop to create navigational links styled as buttons
+- For accessibility, provide descriptive text or `aria-label` for icon-only buttons
+- Choose button variants based on their semantic meaning (primary for main actions, etc.)
+- Use the `loading` state to prevent multiple submissions during async operations
+- For button groups, combine with proper layout components for consistent spacing
+- When using as links, remember to include `target="_blank"` and `rel="noopener noreferrer"` for external links
+
+#### Implementation Details
+
+The Button component renders either as a `<button>` element or an `<a>` element based on whether the `href` prop is provided. This dual functionality allows for flexibility in creating button-styled elements that either trigger actions (with `onClick`) or navigate to new pages (with `href`).
 
 ### RadioGroup
 
