@@ -31,6 +31,7 @@ This document provides comprehensive documentation for all components in the flu
     - [RadialProgressProps](#radialprogressprops)
   - [Table](#table)
   - [TableWithPagination](#tablewithpagination)
+  - [Stat](#stat)
   - [Tooltip](#tooltip)
 - [Navigation Components](#navigation-components)
   - [Sidebar](#sidebar)
@@ -1511,6 +1512,197 @@ TableWithPagination <> TableWithPaginationProps(
   headerBgClass = "bg-base-300"
 )
 ```
+
+### Stat
+
+A component for displaying statistics, data points, or key metrics with optional titles, values, descriptions, and icons.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `Option[String]` | `None` | Title text for the stat |
+| `value` | `Option[String]` | `None` | Main value to display |
+| `desc` | `Option[String]` | `None` | Additional description or context |
+| `figure` | `Option[FluxusNode]` | `None` | Icon or image to display alongside the stat |
+| `figureTop` | `Boolean` | `false` | Whether to position the figure at the top |
+| `actions` | `Option[FluxusNode]` | `None` | Action buttons or links |
+| `variant` | `String` | `""` | Color variant: primary, secondary, accent, info, success, warning, error |
+| `invertColors` | `Boolean` | `false` | Whether to invert color scheme (colored background, light text) |
+| `bordered` | `Boolean` | `false` | Whether to add a border |
+| `compact` | `Boolean` | `false` | Whether to use more compact spacing |
+| `horizontal` | `Boolean` | `false` | Whether to use horizontal layout instead of vertical |
+| `responsive` | `Boolean` | `true` | Whether to make the layout responsive |
+| `className` | `String` | `""` | Additional CSS classes for the containing div |
+| `titleClassName` | `String` | `""` | Additional CSS classes for the title |
+| `valueClassName` | `String` | `""` | Additional CSS classes for the value |
+| `descClassName` | `String` | `""` | Additional CSS classes for the description |
+| `figureClassName` | `String` | `""` | Additional CSS classes for the figure |
+
+#### Examples
+
+##### Basic Stat
+
+```scala
+Stat <> StatProps(
+  title = Some("Total Users"),
+  value = Some("3,721"),
+  desc = Some("↗︎ 12% compared to last month")
+)
+```
+
+##### Stat with Icon
+
+```scala
+Stat <> StatProps(
+  title = Some("Downloads"),
+  value = Some("31K"),
+  desc = Some("Jan 1st - Feb 1st"),
+  figure = Some(
+    svg(
+      xmlns := "http://www.w3.org/2000/svg",
+      cls := "h-8 w-8",
+      fill := "none",
+      viewBox := "0 0 24 24",
+      stroke := "currentColor",
+      path(
+        strokeLinecap := "round",
+        strokeLinejoin := "round",
+        strokeWidth := "2",
+        d := "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+      )
+    )
+  )
+)
+```
+
+##### Colored Stats
+
+```scala
+Stat <> StatProps(
+  title = Some("Revenue"),
+  value = Some("$15,423"),
+  desc = Some("↗︎ 2.3% increase"),
+  variant = "primary"
+)
+
+Stat <> StatProps(
+  title = Some("New Users"),
+  value = Some("1,200"),
+  desc = Some("↘︎ 90 (14%) decrease"),
+  variant = "error"
+)
+```
+
+##### Stats Group
+
+DaisyUI provides styling for grouping stats together:
+
+```scala
+div(
+  cls := "stats shadow",
+  
+  // First stat
+  Stat <> StatProps(
+    title = Some("Total Page Views"),
+    value = Some("89,400"),
+    desc = Some("21% more than last month")
+  ),
+  
+  // Second stat
+  Stat <> StatProps(
+    title = Some("Users"),
+    value = Some("4,200"),
+    desc = Some("↗︎ 40 (2%) more than last month"),
+    variant = "success"
+  ),
+  
+  // Third stat
+  Stat <> StatProps(
+    title = Some("New Registrations"),
+    value = Some("1,200"),
+    desc = Some("↘︎ 90 (14%) less than last month"),
+    variant = "error"
+  )
+)
+```
+
+##### Horizontal Layout
+
+```scala
+Stat <> StatProps(
+  title = Some("Conversion Rate"),
+  value = Some("12.5%"),
+  desc = Some("↗︎ 2.1% increase"),
+  horizontal = true,
+  figure = Some(
+    svg(
+      xmlns := "http://www.w3.org/2000/svg",
+      cls := "h-8 w-8",
+      fill := "none",
+      viewBox := "0 0 24 24",
+      stroke := "currentColor",
+      path(
+        strokeLinecap := "round",
+        strokeLinejoin := "round",
+        strokeWidth := "2",
+        d := "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+      )
+    )
+  )
+)
+```
+
+##### Inverted Colors
+
+```scala
+Stat <> StatProps(
+  title = Some("Active Sessions"),
+  value = Some("256"),
+  desc = Some("Last updated 3 mins ago"),
+  variant = "primary",
+  invertColors = true
+)
+```
+
+##### With Actions
+
+```scala
+Stat <> StatProps(
+  title = Some("Daily Orders"),
+  value = Some("352"),
+  desc = Some("↗︎ 44 (14%) increase"),
+  actions = Some(
+    div(
+      Button <> ButtonProps(
+        text = "View Details",
+        variant = "ghost",
+        size = "xs"
+      )
+    )
+  )
+)
+```
+
+#### Usage Tips
+
+- **Responsive Stats**: Use multiple `Stat` components inside a `stats` container for a responsive grid
+- **Color Coding**: Use appropriate variants to indicate positive/negative values:
+  - `success` for positive metrics
+  - `error` for concerning metrics or decreases
+  - `primary`/`secondary` for neutral metrics
+- **Icons/Figures**: Include meaningful icons that represent the stat's context
+- **Horizontal vs Vertical**: Use horizontal layout for wider containers and vertical for narrower spaces
+- **Descriptions**: Use the description to provide context, trend information, or time period
+- **Grouping**: When using multiple stats together, wrap them in a container with the `stats` class:
+  ```scala
+  div(
+    cls := "stats shadow",
+    Stat <> StatProps(...),
+    Stat <> StatProps(...),
+    // more stats...
+  )
+  ```
 
 ### Tooltip
 
