@@ -3,8 +3,6 @@ package io.github.edadma.fluxus.daisyui
 import io.github.edadma.fluxus._
 import org.scalajs.dom
 
-/** Enhanced button props with comprehensive DaisyUI button properties
-  */
 case class ButtonProps(
     // Core properties
     text: String = "",
@@ -12,6 +10,10 @@ case class ButtonProps(
     variant: String = "primary",  // primary, secondary, accent, info, success, warning, error, ghost, link, neutral
     size: String = "md",          // lg, md, sm, xs
     shape: Option[String] = None, // circle, square
+
+    // Link properties (new)
+    href: Option[String] = None,   // URL when button should act as a link
+    target: Option[String] = None, // Target for link (_blank, _self, etc.)
 
     // Button style modifiers
     soft: Boolean = false, // Softer, lower-opacity version of the variant color
@@ -61,16 +63,6 @@ case class ButtonProps(
     value: Option[String] = None,
 )
 
-/** Enhanced Button component using DaisyUI styling Features:
-  *   - Full DaisyUI button variant support
-  *   - Icon placement (start/end)
-  *   - Support for both text and children content
-  *   - Accessibility attributes
-  *   - Extended event handlers
-  *   - Responsive variants at different breakpoints
-  *   - Focus-visible utility support
-  *   - Soft and dash button variants
-  */
 val Button = (props: ButtonProps) => {
   val classes = List.newBuilder[String]
 
@@ -211,12 +203,12 @@ val Button = (props: ButtonProps) => {
   if (lgSizeClass.nonEmpty) classes += lgSizeClass
   if (xlSizeClass.nonEmpty) classes += xlSizeClass
 
-  // Apply soft variant styling - CORRECTED: use btn-soft as a separate class
+  // Apply soft variant styling
   if (props.soft) {
     classes += "btn-soft"
   }
 
-  // Apply dash variant styling - CORRECTED: use btn-dash as a separate class
+  // Apply dash variant styling
   if (props.dash) {
     classes += "btn-dash"
   }
@@ -262,24 +254,57 @@ val Button = (props: ButtonProps) => {
     contentNodes += div(cls := "ml-2", props.endIcon.get)
   }
 
-  button(
-    cls     := buttonClass,
-    typ     := props.buttonType,
-    onClick := (() => props.onClick()),
+  // Render as either a link or a button based on href prop
+  props.href match {
+    case Some(url) =>
+      // Render as anchor when href is provided
+      a(
+        cls  := buttonClass,
+        href := url,
+        props.target.map(t => target := t).orNull,
+        onClick := (() => props.onClick()),
 
-    // Conditional event handlers
-    if (props.onMouseEnter.isDefined) onMouseEnter := props.onMouseEnter.get else null,
-    if (props.onMouseLeave.isDefined) onMouseLeave := props.onMouseLeave.get else null,
+        // Conditional event handlers
+        if (props.onMouseEnter.isDefined) onMouseEnter := props.onMouseEnter.get else null,
+        if (props.onMouseLeave.isDefined) onMouseLeave := props.onMouseLeave.get else null,
 
-    // Conditional attributes
-    if (props.disabled) disabled := true else null,
-    props.ariaLabel.map(al => aria_label := al).orNull,
-    props.tabIndex.map(ti => tabIndex := ti).orNull,
-    props.buttonRole.map(r => role := r).orNull,
-    props.name.map(n => name := n).orNull,
-    props.value.map(v => value := v).orNull,
+        // Conditional attributes
+        if (props.disabled) {
+          Seq(
+            tabIndex      := -1,
+            aria_disabled := "true",
+            cls           := "pointer-events-none opacity-50",
+          )
+        } else null,
+        props.ariaLabel.map(al => aria_label := al).orNull,
+        props.tabIndex.map(ti => tabIndex := ti).orNull,
+        props.buttonRole.map(r => role := r).orNull,
 
-    // Content
-    contentNodes.result(),
-  )
+        // Content
+        contentNodes.result(),
+      )
+
+    case None =>
+      // Render as button when no href
+      button(
+        cls     := buttonClass,
+        typ     := props.buttonType,
+        onClick := (() => props.onClick()),
+
+        // Conditional event handlers
+        if (props.onMouseEnter.isDefined) onMouseEnter := props.onMouseEnter.get else null,
+        if (props.onMouseLeave.isDefined) onMouseLeave := props.onMouseLeave.get else null,
+
+        // Conditional attributes
+        if (props.disabled) disabled := true else null,
+        props.ariaLabel.map(al => aria_label := al).orNull,
+        props.tabIndex.map(ti => tabIndex := ti).orNull,
+        props.buttonRole.map(r => role := r).orNull,
+        props.name.map(n => name := n).orNull,
+        props.value.map(v => value := v).orNull,
+
+        // Content
+        contentNodes.result(),
+      )
+  }
 }

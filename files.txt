@@ -29,7 +29,6 @@ Alert.scala
 Avatar.scala
 Badge.scala
 Button.scala
-ButtonGroup.scala
 Card.scala
 Container.scala
 Grid.scala
