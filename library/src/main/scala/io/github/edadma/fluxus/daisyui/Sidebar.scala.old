@@ -18,7 +18,7 @@ case class NavItem(
     disabled: Boolean = false,
 )
 
-/** Props for the revised Sidebar component
+/** Props for the Sidebar component
   */
 case class SidebarProps(
     items: List[NavItem] = List(),
@@ -28,9 +28,9 @@ case class SidebarProps(
     rounded: Boolean = true,
     bgClass: String = "",                             // Complete background class e.g. "bg-base-200"
     textClass: String = "",                           // Complete text class e.g. "text-primary"
-    width: String = "w-64",                           // Width when expanded
+    width: String = "w-64",                           // Fixed width using Tailwind classes
     collapsedWidth: String = "w-16",                  // Width when collapsed
-    collapsible: Boolean = false,                     // Whether the sidebar can collapse
+    collapsible: Boolean = false,                     // Whether the entire sidebar can collapse
     collapsed: Boolean = false,                       // Controlled collapsed state
     onCollapseChange: Option[Boolean => Unit] = None, // Callback when collapse state changes
     expandedSections: List[String] = List(),          // IDs of sections that start expanded
@@ -41,22 +41,21 @@ case class SidebarProps(
     menuClassName: String = "",
 )
 
-/** Reworked Sidebar component that uses Menu internally
+/** Sidebar component with collapsible sections and responsive design
   *
-  * This implementation maintains all the features of the original Sidebar:
+  * Features:
   *   - Collapsible sections
-  *   - Icon and badge support
+  *   - Nested navigation support
+  *   - Icon integration
   *   - Active item highlighting
-  *   - Nested navigation
-  *   - Collapse/expand functionality
-  *
-  * But leverages the Menu component for consistent styling and behavior
+  *   - Badges for menu items
+  *   - Mobile-friendly
   */
 val Sidebar = (props: SidebarProps) => {
   // State for tracking which sections are expanded
   val (expandedSections, setExpandedSections, _) = useState[Set[String]](props.expandedSections.toSet)
 
-  // State to track which sections were manually closed by the user
+  // State to track which sections were explicitly closed by the user
   val (manuallyClosedSections, setManuallyClosedSections, _) = useState[Set[String]](Set())
 
   // Internal collapsed state - used when component is uncontrolled
@@ -79,10 +78,16 @@ val Sidebar = (props: SidebarProps) => {
     }
   }
 
-  // Function to check if a section is expanded
-  def isSectionExpanded(path: String): Boolean = expandedSections.contains(path)
+  // Function to check if a nav item or any of its children is active
+  def isItemOrChildActive(item: NavItem, currentPath: String = ""): Boolean = {
+    if (item.isActive) true
+    else {
+      val itemPath = if (currentPath.isEmpty) item.id else s"$currentPath-${item.id}"
+      item.items.exists(child => isItemOrChildActive(child, itemPath))
+    }
+  }
 
-  // Get parent sections from path
+  // Function to get all parent section IDs for a given path
   def getParentSections(path: String): Set[String] = {
     if (!path.contains("-")) return Set()
 
@@ -91,7 +96,7 @@ val Sidebar = (props: SidebarProps) => {
     parentPaths
   }
 
-  // Toggle a section's expanded state
+  // Toggle a section's expanded state - now respects manual closing
   def toggleSection(sectionId: String, forceState: Option[Boolean] = None): Unit = {
     val newState = forceState.getOrElse(!expandedSections.contains(sectionId))
 
@@ -107,7 +112,7 @@ val Sidebar = (props: SidebarProps) => {
   }
 
   // Handle navigation click
-  def handleNavigation(id: String, item: NavItem): Unit = {
+  def handleNavClick(id: String, item: NavItem): Unit = {
     if (!item.disabled) {
       // Execute onClick handler if provided
       item.onClick.foreach(_())
@@ -121,37 +126,6 @@ val Sidebar = (props: SidebarProps) => {
 
       // Call navigation callback if provided
       props.onNavigation.foreach(_(id, item))
-    }
-  }
-
-  // Convert NavItems to Menu components (recursive function)
-  def renderMenuItems(items: List[NavItem], level: Int = 0, parentPath: String = ""): Seq[FluxusNode] = {
-    items.map { item =>
-      val itemPath = if (parentPath.isEmpty) item.id else s"$parentPath-${item.id}"
-
-      if (item.items.nonEmpty) {
-        // This is a submenu item
-        MenuSubmenu <> MenuSubmenuProps(
-          title = item.title,
-          icon = item.icon,
-          active = item.isActive,
-          disabled = item.disabled,
-          expanded = isSectionExpanded(itemPath),
-          children = renderMenuItems(item.items, level + 1, itemPath),
-        )
-      } else {
-        // This is a regular menu item
-        MenuItem <> MenuItemProps(
-          title = item.title,
-          href = item.href,
-          icon = item.icon,
-          active = item.isActive,
-          disabled = item.disabled,
-          badge = item.badge,
-          badgeVariant = item.badgeVariant,
-          onClick = Some(() => handleNavigation(itemPath, item)),
-        )
-      }
     }
   }
 
@@ -177,7 +151,7 @@ val Sidebar = (props: SidebarProps) => {
             }
           } else if (
             item.items.nonEmpty && item.items.exists(childItem =>
-              childItem.items.nonEmpty && childItem.items.exists(_.isActive),
+              childItem.items.nonEmpty && isItemOrChildActive(childItem, currentPath),
             )
           ) {
             // A grandchild is active - expand if not manually closed
@@ -199,7 +173,7 @@ val Sidebar = (props: SidebarProps) => {
       }
       ()
     },
-    Seq(props.items), // Run when items change
+    Seq(), // Empty deps - only run on mount
   )
 
   // Calculate base container classes
@@ -231,6 +205,175 @@ val Sidebar = (props: SidebarProps) => {
   // Additional custom classes
   if (props.className.nonEmpty) {
     props.className.split(" ").foreach(containerClasses += _)
+  }
+
+  // Calculate menu classes
+  val menuClasses = List.newBuilder[String]
+
+  // Base menu class
+  menuClasses += "menu"
+
+  // Size class
+  val menuSizeClass = props.size match {
+    case "xs" => "menu-xs"
+    case "sm" => "menu-sm"
+    case "lg" => "menu-lg"
+    case _    => "menu-md" // Default
+  }
+  menuClasses += menuSizeClass
+
+  // Menu variant
+  val menuVariantClass = props.variant match {
+    case "compact" => "menu-compact"
+    case "boxed"   => "bg-base-200 p-2 rounded-box"
+    case _         => "" // Default is normal
+  }
+  if (menuVariantClass.nonEmpty) menuClasses += menuVariantClass
+
+  // Additional menu classes
+  if (props.menuClassName.nonEmpty) {
+    props.menuClassName.split(" ").foreach(menuClasses += _)
+  }
+
+  // Function to render a navigation item
+  def renderNavItem(item: NavItem, level: Int = 0, parentPath: String = ""): FluxusNode = {
+    val itemPath    = if (parentPath.isEmpty) item.id else s"$parentPath-${item.id}"
+    val hasChildren = item.items.nonEmpty
+    val isExpanded  = expandedSections.contains(itemPath)
+
+    // Check if this item or any of its children is active
+    val isActive = item.isActive || item.items.exists(child => isItemOrChildActive(child, itemPath))
+
+    li(
+      key := itemPath,
+      // Render nav item as a link or a collapsible section
+      if (hasChildren) {
+        // Element for a collapsible section header
+        div(
+          cls := s"flex justify-between items-center ${if (isActive) "active font-medium" else ""} ${
+              if (item.disabled) "disabled opacity-50" else "cursor-pointer"
+            }",
+          onClick := (() => {
+            if (!item.disabled) {
+              // The key change: toggle this specific section and mark manual closure
+              toggleSection(itemPath)
+              item.onClick.foreach(_())
+            }
+          }),
+
+          // Icon and Title section
+          div(
+            cls := "flex items-center gap-2",
+            item.icon.map(icon =>
+              div(
+                cls := "w-5 h-5 flex items-center justify-center",
+                icon,
+              ),
+            ).orNull,
+            if (!isCollapsed) {
+              span(item.title)
+            } else null,
+          ),
+
+          // Right side with badge and toggle icon
+          div(
+            cls := "flex items-center gap-2",
+
+            // Badge if present
+            item.badge.map(badgeText =>
+              if (!isCollapsed) {
+                div(
+                  cls := s"badge badge-sm badge-${item.badgeVariant}",
+                  badgeText,
+                )
+              } else null,
+            ).orNull,
+
+            // Toggle icon if showing
+            if (props.showToggleIcons && !isCollapsed) {
+              div(
+                cls := "text-base-content/70",
+                if (isExpanded) {
+                  svg(
+                    xmlns   := "http://www.w3.org/2000/svg",
+                    cls     := "h-4 w-4",
+                    viewBox := "0 0 20 20",
+                    fill    := "currentColor",
+                    path(
+                      fillRule := "evenodd",
+                      d := "M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z",
+                      clipRule := "evenodd",
+                    ),
+                  )
+                } else {
+                  svg(
+                    xmlns   := "http://www.w3.org/2000/svg",
+                    cls     := "h-4 w-4",
+                    viewBox := "0 0 20 20",
+                    fill    := "currentColor",
+                    path(
+                      fillRule := "evenodd",
+                      d := "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z",
+                      clipRule := "evenodd",
+                    ),
+                  )
+                },
+              )
+            } else null,
+          ),
+        )
+      } else {
+        // Element for a regular nav item (leaf node)
+        a(
+          href := item.href.getOrElse("#"),
+          cls := s"${if (item.isActive) "active" else ""} ${
+              if (item.disabled) "disabled opacity-50 pointer-events-none" else ""
+            }",
+          onClick := ((e: dom.MouseEvent) => {
+            if (item.href.isEmpty || item.href.contains("#")) {
+              e.preventDefault()
+            }
+            if (!item.disabled) {
+              handleNavClick(itemPath, item)
+            }
+          }),
+
+          // Icon and title
+          div(
+            cls := "flex items-center gap-2",
+            item.icon.map(icon =>
+              div(
+                cls := "w-5 h-5 flex items-center justify-center",
+                icon,
+              ),
+            ).orNull,
+            if (!isCollapsed) {
+              span(item.title)
+            } else null,
+          ),
+
+          // Badge if present
+          item.badge.map(badgeText =>
+            if (!isCollapsed) {
+              div(
+                cls := s"badge badge-sm badge-${item.badgeVariant}",
+                badgeText,
+              )
+            } else null,
+          ).orNull,
+        )
+      },
+
+      // Render children if expanded
+      if (hasChildren && isExpanded && !isCollapsed) {
+        ul(
+          cls := "pl-4 mt-1",
+          item.items.map(childItem =>
+            renderNavItem(childItem, level + 1, itemPath),
+          ),
+        )
+      } else null,
+    )
   }
 
   // Render collapse toggle button
@@ -276,17 +419,10 @@ val Sidebar = (props: SidebarProps) => {
       )
     } else null,
 
-    // Menu component
-    Menu <> MenuProps(
-      size = props.size,
-      variant = props.variant,
-      bordered = false, // We're already handling borders on the sidebar container
-      rounded = false,  // We're already handling rounded corners on the sidebar container
-      bgClass = "",     // Using the sidebar's background
-      shadow = false,
-      glass = false,
-      className = props.menuClassName,
-      children = renderMenuItems(props.items),
+    // Menu
+    ul(
+      cls := menuClasses.result().mkString(" "),
+      props.items.map(item => renderNavItem(item)),
     ),
 
     // Bottom collapse button
