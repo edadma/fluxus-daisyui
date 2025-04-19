@@ -266,8 +266,34 @@ case class MenuSubmenuProps(
 
 /** MenuSubmenu component - allows nested menus */
 val MenuSubmenu = (props: MenuSubmenuProps) => {
-  // Local state for submenu expansion
+  // Local state for tracking expanded state
   val (isExpanded, setIsExpanded, _) = useState(props.expanded)
+
+  // Ref to track if toggle was triggered programmatically
+  val detailsRef      = useRef[dom.html.Element]()
+  val isInitialRender = useRef[Boolean](true)
+
+  // Sync open state from props on initial render only
+  useEffect(
+    () => {
+      // Only run once on initial render
+      if (isInitialRender.current) {
+        isInitialRender.current = false
+
+        // Directly set the open property if we have a ref
+        if (detailsRef.current != null && detailsRef.current.asInstanceOf[dom.html.Element].tagName == "DETAILS") {
+          val details = detailsRef.current.asInstanceOf[dom.Element]
+          if (props.expanded) {
+            details.setAttribute("open", "")
+          } else {
+            details.removeAttribute("open")
+          }
+        }
+      }
+      ()
+    },
+    Seq(), // Only run on mount
+  )
 
   // Build item classes
   val itemClasses = List.newBuilder[String]
@@ -284,14 +310,27 @@ val MenuSubmenu = (props: MenuSubmenuProps) => {
   // Join all item classes with spaces
   val itemClass = itemClasses.result().mkString(" ")
 
+  // Handle details toggle
+  def handleToggle(e: dom.Event): Unit = {
+    if (!props.disabled) {
+      // Get the expanded state from the details element directly
+      val details = e.target.asInstanceOf[dom.Element]
+      val isOpen  = details.hasAttribute("open")
+      setIsExpanded(isOpen)
+    }
+  }
+
   // Create the submenu
   li(
     // Main submenu title item
     details(
-      open := isExpanded,
-      onToggle := ((e: dom.Event) =>
-        if (!props.disabled) setIsExpanded(!isExpanded)
-      ),
+      ref := detailsRef,
+      // Do NOT set the open attribute via JSX/Fluxus here
+      // This prevents the toggle loop
+      // open := isExpanded, <- REMOVE THIS
+
+      // Use onToggle to update our state when user interacts
+      onToggle := handleToggle,
 
       // Summary element (clickable header)
       summary(
