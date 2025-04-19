@@ -1834,6 +1834,212 @@ Tooltip <> TooltipProps(
 
 ## Navigation Components
 
+### Menu Components
+
+#### Menu
+
+A versatile navigation menu component with support for items, sections, and collapsible sub-menus.
+
+##### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `Seq[FluxusNode]` | _required_ | Menu items, titles, and dividers |
+| `size` | `String` | `"md"` | Menu size: xs, sm, md, lg |
+| `variant` | `String` | `"normal"` | Menu style: normal, compact, horizontal |
+| `bordered` | `Boolean` | `false` | Whether to add border |
+| `rounded` | `Boolean` | `false` | Whether to add rounded corners |
+| `bgClass` | `String` | `""` | Background class (e.g., "bg-base-200") |
+| `shadow` | `Boolean` | `false` | Whether to add shadow |
+| `glass` | `Boolean` | `false` | Whether to use glass effect |
+| `className` | `String` | `""` | Additional CSS classes |
+| `ariaLabel` | `Option[String]` | `None` | Accessibility label |
+
+##### MenuItem Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `String` | `""` | Menu item text |
+| `children` | `Option[FluxusNode]` | `None` | Alternative to text for custom content |
+| `href` | `Option[String]` | `None` | Link URL |
+| `active` | `Boolean` | `false` | Whether item is marked as active |
+| `disabled` | `Boolean` | `false` | Whether item is disabled |
+| `onClick` | `Option[() => Unit]` | `None` | Click handler |
+| `icon` | `Option[FluxusNode]` | `None` | Icon to display at start of item |
+| `endIcon` | `Option[FluxusNode]` | `None` | Icon to display at end of item |
+| `badge` | `Option[String]` | `None` | Badge text |
+| `badgeVariant` | `String` | `"primary"` | Badge color variant |
+| `className` | `String` | `""` | Additional CSS classes |
+
+##### MenuTitle Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `String` | _required_ | Section title text |
+| `children` | `Option[FluxusNode]` | `None` | Alternative to text for custom content |
+| `className` | `String` | `""` | Additional CSS classes |
+
+##### MenuDivider Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `String` | `""` | Additional CSS classes |
+
+##### MenuSubmenu Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `String` | `""` | Submenu title |
+| `icon` | `Option[FluxusNode]` | `None` | Icon for the submenu |
+| `children` | `Seq[FluxusNode]` | _required_ | Submenu items |
+| `active` | `Boolean` | `false` | Whether submenu is marked as active |
+| `expanded` | `Boolean` | `false` | Whether submenu is expanded by default |
+| `disabled` | `Boolean` | `false` | Whether submenu is disabled |
+| `className` | `String` | `""` | Additional CSS classes |
+
+##### Examples
+
+###### Basic Menu
+
+```scala
+Menu <> MenuProps(
+  size = "md",
+  bordered = true,
+  className = "w-56",
+  children = Seq(
+    MenuTitle <> MenuTitleProps(
+      title = "Menu Title"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Dashboard",
+      icon = Some(HomeIcon),
+      active = true
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Settings",
+      icon = Some(SettingsIcon)
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Disabled Item",
+      disabled = true
+    )
+  )
+)
+```
+
+###### Menu with Badges and Icons
+
+```scala
+Menu <> MenuProps(
+  size = "md",
+  children = Seq(
+    MenuItem <> MenuItemProps(
+      title = "Inbox",
+      icon = Some(InboxIcon),
+      badge = Some("5"),
+      badgeVariant = "primary"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Notifications",
+      icon = Some(BellIcon),
+      badge = Some("12"),
+      badgeVariant = "error"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Tasks",
+      icon = Some(TaskIcon),
+      badge = Some("New"),
+      badgeVariant = "success"
+    )
+  )
+)
+```
+
+###### Menu with Submenu
+
+```scala
+Menu <> MenuProps(
+  size = "md",
+  children = Seq(
+    MenuItem <> MenuItemProps(
+      title = "Home",
+      icon = Some(HomeIcon)
+    ),
+    MenuSubmenu <> MenuSubmenuProps(
+      title = "User Management",
+      icon = Some(UserIcon),
+      expanded = true,
+      children = Seq(
+        MenuItem <> MenuItemProps(
+          title = "View Users"
+        ),
+        MenuItem <> MenuItemProps(
+          title = "Add User"
+        ),
+        MenuItem <> MenuItemProps(
+          title = "User Groups"
+        )
+      )
+    ),
+    MenuDivider <> MenuDividerProps(),
+    MenuSubmenu <> MenuSubmenuProps(
+      title = "Settings",
+      icon = Some(SettingsIcon),
+      children = Seq(
+        MenuItem <> MenuItemProps(
+          title = "General"
+        ),
+        MenuItem <> MenuItemProps(
+          title = "Security"
+        )
+      )
+    )
+  )
+)
+```
+
+###### Horizontal Menu
+
+```scala
+Menu <> MenuProps(
+  variant = "horizontal",
+  size = "md",
+  bgClass = "bg-base-200",
+  rounded = true,
+  bordered = true,
+  children = Seq(
+    MenuItem <> MenuItemProps(
+      title = "Home",
+      active = true
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Products"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Services"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "About"
+    ),
+    MenuItem <> MenuItemProps(
+      title = "Contact"
+    )
+  )
+)
+```
+
+##### Usage Tips
+
+- Use `MenuTitle` to create section headers within a menu
+- Use `MenuDivider` to visually separate groups of menu items
+- `MenuSubmenu` can be used to create nested navigation structures
+- The `active` prop highlights the currently selected item
+- Include icons to provide visual cues for menu items
+- Use badges to display counters or status indicators
+- The `variant="horizontal"` option creates a top navigation bar
+- For mobile-friendly menus, consider using collapsible sections
+
+
 ### Sidebar
 
 A navigation sidebar component with collapsible sections, icons, and badges.
