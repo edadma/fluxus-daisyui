@@ -2039,55 +2039,53 @@ Menu <> MenuProps(
 - The `variant="horizontal"` option creates a top navigation bar
 - For mobile-friendly menus, consider using collapsible sections
 
-
 ### Sidebar
 
-A navigation sidebar component with collapsible sections, icons, and badges.
+A versatile navigation sidebar component that supports collapsible sections, icons, badges, and responsive behavior.
 
-#### NavItem
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `String` | _required_ | Unique identifier |
-| `title` | `String` | _required_ | Menu item text |
-| `icon` | `Option[FluxusNode]` | `None` | Icon for the item |
-| `href` | `Option[String]` | `None` | Link URL |
-| `onClick` | `Option[() => Unit]` | `None` | Click handler |
-| `badge` | `Option[String]` | `None` | Badge text |
-| `badgeVariant` | `String` | `"primary"` | Badge color variant |
-| `items` | `List[NavItem]` | `List()` | Child menu items |
-| `isActive` | `Boolean` | `false` | Whether item is active |
-| `disabled` | `Boolean` | `false` | Whether item is disabled |
-
-#### Props
+#### NavItem Model
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `items` | `List[NavItem]` | `List()` | Navigation items |
+| `id` | `String` | _required_ | Unique identifier for the navigation item |
+| `title` | `String` | _required_ | Display text for the navigation item |
+| `icon` | `Option[FluxusNode]` | `None` | Icon to display alongside the title |
+| `href` | `Option[String]` | `None` | Link URL for navigation |
+| `onClick` | `Option[() => Unit]` | `None` | Custom click handler (alternative to href) |
+| `badge` | `Option[String]` | `None` | Text to display in a badge |
+| `badgeVariant` | `String` | `"primary"` | Color variant for the badge |
+| `items` | `List[NavItem]` | `List()` | Child navigation items for dropdowns/sections |
+| `isActive` | `Boolean` | `false` | Whether this item is currently active |
+| `disabled` | `Boolean` | `false` | Whether this item is disabled |
+
+#### SidebarProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `List[NavItem]` | `List()` | Navigation items to display |
 | `variant` | `String` | `"normal"` | Sidebar style: normal, compact, boxed |
 | `size` | `String` | `"md"` | Menu size: xs, sm, md, lg |
-| `bordered` | `Boolean` | `false` | Whether to show border |
+| `bordered` | `Boolean` | `false` | Whether to show a border |
 | `rounded` | `Boolean` | `true` | Whether to use rounded corners |
 | `bgClass` | `String` | `""` | Background CSS class |
 | `textClass` | `String` | `""` | Text color CSS class |
 | `width` | `String` | `"w-64"` | Width when expanded |
 | `collapsedWidth` | `String` | `"w-16"` | Width when collapsed |
-| `collapsible` | `Boolean` | `false` | Whether sidebar can collapse |
-| `collapsed` | `Boolean` | `false` | Whether sidebar is collapsed |
+| `collapsible` | `Boolean` | `false` | Whether sidebar can be collapsed |
+| `collapsed` | `Boolean` | `false` | Whether sidebar is initially collapsed |
 | `onCollapseChange` | `Option[Boolean => Unit]` | `None` | Collapse state change handler |
 | `expandedSections` | `List[String]` | `List()` | IDs of initially expanded sections |
-| `onNavigation` | `Option[(String, NavItem) => Unit]` | `None` | Navigation handler |
-| `collapseButtonPosition` | `String` | `"top"` | Position: top, bottom |
-| `showToggleIcons` | `Boolean` | `true` | Whether to show section toggle icons |
-| `className` | `String` | `""` | Additional sidebar CSS classes |
-| `menuClassName` | `String` | `""` | Additional menu CSS classes |
+| `onNavigation` | `Option[(String, NavItem) => Unit]` | `None` | Navigation handler with item ID and data |
+| `collapseButtonPosition` | `String` | `"top"` | Position for collapse toggle: top, bottom |
+| `showToggleIcons` | `Boolean` | `true` | Whether to show section expansion icons |
+| `className` | `String` | `""` | Additional CSS classes for container |
+| `menuClassName` | `String` | `""` | Additional CSS classes for menu |
 
-#### Example
+#### Examples
+
+##### Basic Sidebar
 
 ```scala
-// State for the active navigation item
-val (activeNavId, setActiveNavId, _) = useState("dashboard")
-
 // Create navigation items
 val sidebarItems = List(
   NavItem(
@@ -2144,6 +2142,197 @@ Sidebar <> SidebarProps(
   onNavigation = Some(handleNavigation)
 )
 ```
+
+##### Collapsible Sidebar
+
+```scala
+val (isSidebarCollapsed, setIsSidebarCollapsed, _) = useState(false)
+
+Sidebar <> SidebarProps(
+  items = navigationItems,
+  variant = "normal",
+  collapsible = true,
+  collapsed = isSidebarCollapsed,
+  onCollapseChange = Some(setIsSidebarCollapsed),
+  width = "w-64",
+  collapsedWidth = "w-16",
+  collapseButtonPosition = "bottom",
+  bgClass = "bg-base-200"
+)
+```
+
+##### Compact Sidebar with Badges
+
+```scala
+Sidebar <> SidebarProps(
+  items = List(
+    NavItem(
+      id = "inbox",
+      title = "Inbox",
+      icon = Some(InboxIcon),
+      href = Some("#inbox"),
+      badge = Some("5"),
+      badgeVariant = "primary"
+    ),
+    NavItem(
+      id = "notifications",
+      title = "Notifications",
+      icon = Some(BellIcon),
+      href = Some("#notifications"),
+      badge = Some("3"),
+      badgeVariant = "error"
+    ),
+    NavItem(
+      id = "tasks",
+      title = "Tasks",
+      icon = Some(TaskIcon),
+      href = Some("#tasks"),
+      badge = Some("New"),
+      badgeVariant = "success"
+    )
+  ),
+  variant = "compact",
+  size = "sm",
+  bgClass = "bg-base-300",
+  rounded = true
+)
+```
+
+##### Boxed Style Sidebar
+
+```scala
+Sidebar <> SidebarProps(
+  items = navigationItems,
+  variant = "boxed",
+  size = "md",
+  bordered = true,
+  rounded = true,
+  bgClass = "bg-base-100",
+  menuClassName = "px-2 py-2"
+)
+```
+
+##### Dark Themed Sidebar
+
+```scala
+Sidebar <> SidebarProps(
+  items = navigationItems,
+  variant = "normal",
+  size = "md",
+  bgClass = "bg-neutral text-neutral-content",
+  width = "w-72"
+)
+```
+
+##### Responsive Layout with Sidebar
+
+```scala
+val (isMobileView, setIsMobileView, _) = useState(window.innerWidth < 768)
+val (isSidebarOpen, setIsSidebarOpen, _) = useState(!isMobileView)
+
+// Effect to handle window resize
+useEffect(
+  () => {
+    val handleResize = (_: dom.Event) => {
+      val newIsMobile = dom.window.innerWidth < 768
+      setIsMobileView(newIsMobile)
+      if (!newIsMobile && !isSidebarOpen) {
+        setIsSidebarOpen(true)
+      }
+    }
+    
+    dom.window.addEventListener("resize", handleResize)
+    
+    // Cleanup
+    () => dom.window.removeEventListener("resize", handleResize)
+  },
+  Seq(isSidebarOpen)
+)
+
+div(
+  cls := "flex h-screen overflow-hidden",
+  
+  // Sidebar (conditionally displayed on mobile)
+  if (isSidebarOpen || !isMobileView) {
+    div(
+      cls := "h-full z-20",
+      if (isMobileView) cls := "absolute" else cls := "relative",
+      
+      Sidebar <> SidebarProps(
+        items = navigationItems,
+        variant = "normal",
+        collapsible = !isMobileView,
+        bgClass = "bg-base-200",
+        onNavigation = Some((id, _) => {
+          if (isMobileView) setIsSidebarOpen(false)
+          setActiveNavId(id)
+        })
+      ),
+      
+      // Backdrop for mobile view
+      if (isMobileView) {
+        div(
+          cls := "fixed inset-0 bg-black bg-opacity-50 z-[-1]",
+          onClick := (() => setIsSidebarOpen(false))
+        )
+      } else null
+    )
+  } else null,
+  
+  // Main content
+  div(
+    cls := "flex-1 overflow-auto",
+    
+    // Toggle button for mobile
+    if (isMobileView) {
+      Button <> ButtonProps(
+        text = "Menu",
+        variant = "primary",
+        className = "m-4",
+        onClick = () => setIsSidebarOpen(true)
+      )
+    } else null,
+    
+    // Page content
+    div(
+      cls := "p-6",
+      h1(cls := "text-2xl font-bold mb-4", "Dashboard"),
+      // Content here
+    )
+  )
+)
+```
+
+#### Usage Guidelines
+
+1. **Navigation Structure**:
+  - Organize related items into nested sections
+  - Use icons for better visual recognition
+  - Limit nesting to 2 levels for better usability
+
+2. **State Management**:
+  - Set `isActive` on the selected item to highlight it
+  - The `onNavigation` callback gives you the ID and item data when a navigation occurs
+  - Use `expandedSections` to control which sections are initially expanded
+
+3. **Responsiveness**:
+  - Enable `collapsible` for desktop views to give users more space
+  - For mobile views, consider conditionally rendering the sidebar or using an overlay approach
+  - Adjust the width values for different screen sizes
+
+4. **Styling Variations**:
+  - "normal" - Standard sidebar with full details
+  - "compact" - Space-efficient sidebar with smaller padding
+  - "boxed" - Sidebar with distinct sections and visual separation
+
+5. **Badges**:
+  - Use badges sparingly for important notifications or status indicators
+  - Choose appropriate colors: primary for neutral counts, error for alerts, success for positive status
+
+6. **Integration Tips**:
+  - Combine with other components like `ThemeChooser` for a complete navigation experience
+  - For mobile apps, consider using `Sidebar` for main navigation and tabs for section navigation
+  - Use consistent icons throughout your application for a better user experience
 
 ### Tabs
 
