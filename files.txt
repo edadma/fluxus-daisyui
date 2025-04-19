@@ -10,6 +10,7 @@ GridTest.scala
 InputTest.scala
 LabelTest.scala
 main.scala
+MenuTest.scala
 ModalTest.scala
 ProgressTest.scala
 RadioGroupTest.scala
@@ -34,6 +35,7 @@ Container.scala
 Grid.scala
 Input.scala
 Label.scala
+Menu.scala
 Modal.scala
 notification.scala
 Progress.scala
