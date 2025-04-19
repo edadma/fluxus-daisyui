@@ -5,12 +5,14 @@
 ButtonTest.scala
 GridTest.scala
 MenuTest.scala
+SidebarTest.scala
 
 # fluxus-daisyui library code
 ./library/src/main/scala/io/github/edadma/fluxus/daisyui
 Button.scala
 Grid.scala
 Menu.scala
+Sidebar.scala
 
 # build files
 ./
