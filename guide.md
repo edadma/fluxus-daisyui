@@ -1834,6 +1834,139 @@ Tooltip <> TooltipProps(
 
 ## Navigation Components
 
+### LanguageSwitcher
+
+A component for selecting and switching between different languages in your application.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `currentLang` | `String` | _required_ | Current language code |
+| `supportedLanguages` | `Map[String, String]` | _required_ | Map of language codes to language names |
+| `onLanguageChange` | `String => Unit` | _required_ | Callback when language changes |
+| `displayMode` | `String` | `"code"` | Display mode: "code", "name", or "both" |
+| `showFlags` | `Boolean` | `false` | Whether to show language flags |
+| `variant` | `String` | `"ghost"` | Button variant: primary, secondary, accent, ghost, etc. |
+| `size` | `String` | `"md"` | Size: xs, sm, md, lg |
+| `buttonShape` | `String` | `"circle"` | Button shape: circle, square, default |
+| `dropdownAlignment` | `String` | `"end"` | Dropdown alignment: start, end, top, bottom |
+| `bgClass` | `String` | `"bg-base-200"` | Background class for dropdown |
+| `className` | `String` | `""` | Additional class for container |
+| `buttonClassName` | `String` | `""` | Additional class for button |
+| `dropdownClassName` | `String` | `""` | Additional class for dropdown |
+
+#### Examples
+
+##### Basic Language Switcher
+
+```scala
+val (currentLanguage, setCurrentLanguage, _) = useState("en")
+
+val languages = Map(
+  "en" -> "English",
+  "es" -> "Español",
+  "fr" -> "Français",
+  "de" -> "Deutsch"
+)
+
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage
+)
+```
+
+##### Custom Display Mode
+
+```scala
+// Display language name instead of code
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage,
+  displayMode = "name"
+)
+
+// Display both code and name
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage,
+  displayMode = "both"
+)
+```
+
+##### Styling Variants
+
+```scala
+// Primary button style
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage,
+  variant = "primary",
+  buttonShape = "default"
+)
+
+// Different sizes
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage,
+  size = "sm"
+)
+
+// Custom alignment
+LanguageSwitcher <> LanguageSwitcherProps(
+  currentLang = currentLanguage,
+  supportedLanguages = languages,
+  onLanguageChange = setCurrentLanguage,
+  dropdownAlignment = "start"
+)
+```
+
+##### Integration Example
+
+```scala
+// In a navigation bar
+div(
+  cls := "navbar bg-base-100",
+  div(
+    cls := "flex-1",
+    a(
+      cls := "btn btn-ghost normal-case text-xl",
+      "MyApp"
+    )
+  ),
+  div(
+    cls := "flex-none gap-2",
+    LanguageSwitcher <> LanguageSwitcherProps(
+      currentLang = currentLanguage,
+      supportedLanguages = languages,
+      onLanguageChange = setCurrentLanguage,
+      variant = "ghost",
+      size = "sm"
+    ),
+    ThemeChooser <> ThemeChooserProps(
+      variant = "toggle"
+    )
+  )
+)
+```
+
+#### Usage Tips
+
+- **Language Codes**: Use standard ISO language codes (e.g., "en", "fr", "de") as keys in the `supportedLanguages` map
+- **i18n Integration**: Connect the `onLanguageChange` callback to your application's internationalization system
+- **Display Modes**:
+  - Use `"code"` for a compact display showing only the language code
+  - Use `"name"` to show the full language name
+  - Use `"both"` to show both code and name for clarity
+- **Positioning**: Adjust `dropdownAlignment` based on where the component appears in your layout
+- **Styling**: The component leverages DaisyUI's dropdown and button styles, so all DaisyUI button variants work
+- **Accessibility**: The component provides proper ARIA attributes for the dropdown menu
+
 ### Menu Components
 
 #### Menu
