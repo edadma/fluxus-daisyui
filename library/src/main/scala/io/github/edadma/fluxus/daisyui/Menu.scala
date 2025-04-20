@@ -139,8 +139,21 @@ val MenuItem = (props: MenuItemProps) => {
 
   // Create badge element if needed
   val badgeElement = props.badge.map(text =>
+    val badgeVariantClass = props.badgeVariant match {
+      case "primary"   => "badge-primary"
+      case "secondary" => "badge-secondary"
+      case "accent"    => "badge-accent"
+      case "info"      => "badge-info"
+      case "success"   => "badge-success"
+      case "warning"   => "badge-warning"
+      case "error"     => "badge-error"
+      case "ghost"     => "badge-ghost"
+      case "neutral"   => "badge-neutral"
+      case _           => "badge-primary" // Default to primary
+    }
+
     div(
-      cls := s"badge badge-sm badge-${props.badgeVariant}",
+      cls := "badge badge-sm " + badgeVariantClass,
       text,
     ),
   ).orNull
@@ -154,7 +167,7 @@ val MenuItem = (props: MenuItemProps) => {
       a(
         href    := props.href.get,
         cls     := itemClass,
-        onClick := (props.onClick.map(handler => (() => handler())).getOrElse(null)),
+        onClick := props.onClick.map(handler => () => handler()).orNull,
 
         // Icon (if provided)
         props.icon.orNull,
@@ -176,7 +189,7 @@ val MenuItem = (props: MenuItemProps) => {
       // Regular menu item without link
       a(
         cls      := itemClass,
-        onClick  := (if (props.disabled) null else props.onClick.map(handler => (() => handler())).getOrElse(null)),
+        onClick  := (if (props.disabled) null else props.onClick.map(handler => () => handler()).orNull),
         tabIndex := (if (props.disabled) -1 else 0),
 
         // Icon (if provided)
@@ -232,7 +245,7 @@ val MenuDivider = (props: MenuDividerProps) => {
   val dividerClasses = List.newBuilder[String]
 
   // Base class
-  dividerClasses += "divider"
+  dividerClasses += "divider my-1"
 
   // Add any custom classes
   if (props.className.nonEmpty) {
@@ -243,7 +256,7 @@ val MenuDivider = (props: MenuDividerProps) => {
   val dividerClass = dividerClasses.result().mkString(" ")
 
   // Create the divider element
-  li(
+  div(
     cls := dividerClass,
   )
 }
@@ -267,7 +280,7 @@ case class MenuSubmenuProps(
 /** MenuSubmenu component - allows nested menus */
 val MenuSubmenu = (props: MenuSubmenuProps) => {
   // Local state for tracking expanded state
-  val (isExpanded, setIsExpanded, _) = useState(props.expanded)
+  val (_, setIsExpanded, _) = useState(props.expanded)
 
   // Ref to track if toggle was triggered programmatically
   val detailsRef      = useRef[dom.html.Element]()

@@ -213,8 +213,18 @@ val ThemeChooser = (props: ThemeChooserProps) => {
 
     case "dropdown" =>
       // Render a dropdown with all themes
+      val alignmentClass = props.alignment match {
+        case "start"  => "dropdown-start"
+        case "end"    => "dropdown-end"
+        case "top"    => "dropdown-top"
+        case "bottom" => "dropdown-bottom"
+        case "left"   => "dropdown-left"
+        case "right"  => "dropdown-right"
+        case _        => "" // Default case if needed
+      }
+
       div(
-        cls := s"dropdown dropdown-${props.alignment} ${props.className}",
+        cls := s"dropdown $alignmentClass ${props.className}",
 
         // Dropdown trigger
         label(
