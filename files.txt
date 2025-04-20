@@ -13,6 +13,7 @@ Button.scala
 Grid.scala
 Menu.scala
 Sidebar.scala
+LanguageSwitcher.scala
 
 # build files
 ./
